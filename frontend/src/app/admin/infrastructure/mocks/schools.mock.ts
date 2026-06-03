@@ -6,13 +6,16 @@ export const SCHOOLS_MOCK: School[] = [
     nombre: 'Dojang Dragón Rojo',
     sigla: 'DDR',
     status: 'activa',
-    instructor: {
-      nombre: 'Juan Pérez',
-      dni: '12345678',
-      graduacion: '4° Dan',
-      telefono: '385111222',
-      email: 'juan.perez@dragonrojo.com'
-    },
+    instructores: [
+      {
+        nombre: 'Juan Pérez',
+        dni: '12345678',
+        graduacion: '4° Dan',
+        rol: 'Maestro',
+        telefono: '385111222',
+        email: 'juan.perez@dragonrojo.com'
+      }
+    ],
     ubicacion: {
       pais: 'Argentina',
       provincia: 'Santiago del Estero',
@@ -32,13 +35,16 @@ export const SCHOOLS_MOCK: School[] = [
     nombre: 'Academia Tigre Blanco',
     sigla: 'ATB',
     status: 'activa',
-    instructor: {
-      nombre: 'Ricardo Sosa',
-      dni: '22334455',
-      graduacion: '5° Dan',
-      telefono: '385999888',
-      email: 'rsosa@tigreblanco.com'
-    },
+    instructores: [
+      {
+        nombre: 'Ricardo Sosa',
+        dni: '22334455',
+        graduacion: '5° Dan',
+        rol: 'Maestro',
+        telefono: '385999888',
+        email: 'rsosa@tigreblanco.com'
+      }
+    ],
     ubicacion: {
       pais: 'Argentina',
       provincia: 'Tucumán',

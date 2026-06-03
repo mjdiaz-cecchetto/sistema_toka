@@ -1,8 +1,16 @@
 <div class="modal-overlay" [class.open]="isOpen()" (click)="onOutsideClick($event)">
-  <div class="modal" [class.size-lg]="size() === 'lg'">
-    <div class="modal-title">{{ title() }}</div>
-    <p class="modal-sub">{{ subtitle() }}</p>
-    <ng-content />
+  <div class="modal-container" [class.size-lg]="size() === 'lg'" [class.size-xl]="size() === 'xl'">
+    <div class="modal-header-wrap">
+      <div class="modal-header">{{ title() }}</div>
+      @if (subtitle()) {
+        <p class="modal-sub">{{ subtitle() }}</p>
+      }
+    </div>
+    
+    <div class="modal-body">
+      <ng-content />
+    </div>
+
     <div class="modal-actions">
       <button class="btn-cancel" (click)="close.emit()">Cancelar</button>
       <button class="btn-submit" (click)="submit.emit()">{{ submitLabel() }}</button>

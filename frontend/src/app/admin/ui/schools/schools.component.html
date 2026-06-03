@@ -37,9 +37,18 @@
 
         <div class="school-body">
           <div class="body-section">
-            <div class="section-label">Instructor Principal</div>
-            <div class="instructor-name">{{ school.instructor.nombre }}</div>
-            <div class="instructor-rank">{{ school.instructor.graduacion }}</div>
+            <div class="section-label">Instructores ({{ school.instructores.length || 0 }})</div>
+            <div class="instructors-list">
+              @for (inst of school.instructores; track $index) {
+                <div class="instructor-item">
+                  <div class="instructor-main">
+                    <span class="inst-role">{{ inst.rol }}</span>
+                    <span class="inst-name">{{ inst.nombre }}</span>
+                  </div>
+                  <span class="inst-grad">{{ inst.graduacion }}</span>
+                </div>
+              }
+            </div>
           </div>
 
           <div class="body-section">
@@ -75,87 +84,194 @@
 <app-modal 
   [isOpen]="isModalOpen()" 
   [title]="selectedSchool() ? 'Editar Escuela' : 'Registrar Nueva Escuela'" 
-  [subtitle]="'Completa la información detallada de la escuela e instructor.'"
+  [subtitle]="'Completa la información detallada de la escuela e instructores.'"
   submitLabel="Guardar Escuela"
-  size="lg"
+  size="xl"
   (close)="isModalOpen.set(false)"
   (submit)="saveSchool()">
   
-  <form [formGroup]="schoolForm" class="school-form">
-    <!-- Información General -->
-    <div class="form-section">
-      <h4 class="section-title">Información General</h4>
-      <div class="form-grid">
-        <div class="form-group">
-          <label>Nombre de la Escuela *</label>
-          <input type="text" formControlName="nombre" class="form-input" placeholder="Ej: Dojang Dragón Rojo">
-        </div>
-        <div class="form-group">
-          <label>Sigla (Opcional)</label>
-          <input type="text" formControlName="sigla" class="form-input" placeholder="Ej: DDR">
-        </div>
-      </div>
-    </div>
-
-    <!-- Instructor -->
-    <div class="form-section" formGroupName="instructor">
-      <h4 class="section-title">Instructor Principal</h4>
-      <div class="form-grid">
-        <div class="form-group">
-          <label>Nombre Completo *</label>
-          <input type="text" formControlName="nombre" class="form-input" placeholder="Nombre y Apellido">
-        </div>
-        <div class="form-group">
-          <label>Graduación *</label>
-          <select formControlName="graduacion" class="form-input">
-            @for (grad of masterData.graduations(); track grad.value) {
-              <option [value]="grad.label">{{ grad.label }}</option>
+  <form [formGroup]="schoolForm" class="school-modal-form">
+    <!-- Sección 1: Logo e Info General -->
+    <div class="modal-section">
+      <div class="section-badge">1</div>
+      <div class="section-content">
+        <h4 class="section-title">Información General</h4>
+        
+        <div class="logo-upload-box">
+          <div class="logo-preview-wrapper">
+            @if (logoPreview()) {
+              <img [src]="logoPreview()" alt="Logo preview">
+              <button type="button" class="btn-clear-logo" (click)="logoPreview.set(null); schoolForm.get('logo')?.setValue('')">
+                <svg viewBox="0 0 24 24"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+              </button>
+            } @else {
+              <div class="logo-empty">
+                <svg viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>
+                <span>Sin Logo</span>
+              </div>
             }
-          </select>
+          </div>
+          <div class="logo-meta">
+            <label class="btn-upload">
+              <svg viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+              Cargar Logo
+              <input type="file" (change)="onLogoSelected($event)" accept="image/*" hidden>
+            </label>
+            <p class="logo-help">Sugerido: Formato cuadrado PNG/JPG (máx 2MB)</p>
+          </div>
         </div>
-      </div>
-      <div class="form-grid">
-        <div class="form-group">
-          <label>DNI *</label>
-          <input type="text" formControlName="dni" class="form-input">
-        </div>
-        <div class="form-group">
-          <label>Teléfono *</label>
-          <input type="text" formControlName="telefono" class="form-input">
+
+        <div class="input-grid">
+          <div class="form-field">
+            <label>Nombre de la Escuela</label>
+            <div class="input-wrapper">
+              <input type="text" formControlName="nombre" placeholder="Ej: Dojang Dragón Rojo">
+            </div>
+          </div>
+          <div class="form-field">
+            <label>Sigla o Abreviatura</label>
+            <div class="input-wrapper">
+              <input type="text" formControlName="sigla" placeholder="Ej: DDR">
+            </div>
+          </div>
         </div>
       </div>
     </div>
 
-    <!-- Ubicación -->
-    <div class="form-section" formGroupName="ubicacion">
-      <h4 class="section-title">Ubicación y Sede</h4>
-      <div class="form-grid">
-        <div class="form-group">
-          <label>Provincia *</label>
-          <input type="text" formControlName="provincia" class="form-input">
+    <!-- Sección 2: Ubicación -->
+    <div class="modal-section" formGroupName="ubicacion">
+      <div class="section-badge">2</div>
+      <div class="section-content">
+        <h4 class="section-title">Ubicación y Sede</h4>
+        <div class="input-grid">
+          <div class="form-field">
+            <label>Provincia</label>
+            <div class="input-wrapper">
+              <input type="text" formControlName="provincia" placeholder="Nombre de la provincia">
+            </div>
+          </div>
+          <div class="form-field">
+            <label>Ciudad</label>
+            <div class="input-wrapper">
+              <input type="text" formControlName="ciudad" placeholder="Nombre de la ciudad">
+            </div>
+          </div>
         </div>
-        <div class="form-group">
-          <label>Ciudad *</label>
-          <input type="text" formControlName="ciudad" class="form-input">
+        <div class="form-field full-width">
+          <label>Dirección Completa</label>
+          <div class="input-wrapper">
+            <input type="text" formControlName="direccion" placeholder="Calle, número, barrio...">
+          </div>
         </div>
-      </div>
-      <div class="form-group">
-        <label>Dirección *</label>
-        <input type="text" formControlName="direccion" class="form-input">
       </div>
     </div>
 
-    <!-- Contacto -->
-    <div class="form-section" formGroupName="contacto">
-      <h4 class="section-title">Contacto de la Escuela</h4>
-      <div class="form-grid">
-        <div class="form-group">
-          <label>Email *</label>
-          <input type="email" formControlName="email" class="form-input">
+    <!-- Sección 3: Contacto -->
+    <div class="modal-section" formGroupName="contacto">
+      <div class="section-badge">3</div>
+      <div class="section-content">
+        <h4 class="section-title">Contacto de la Escuela</h4>
+        <div class="input-grid">
+          <div class="form-field">
+            <label>Email Oficial (Opcional)</label>
+            <div class="input-wrapper">
+              <input type="email" formControlName="email" placeholder="correo@ejemplo.com">
+            </div>
+          </div>
+          <div class="form-field">
+            <label>Instagram (Opcional)</label>
+            <div class="input-wrapper prefix">
+              <span class="prefix-text">@</span>
+              <input type="text" formControlName="instagram" placeholder="usuario">
+            </div>
+          </div>
+          <div class="form-field">
+            <label>WhatsApp (Opcional)</label>
+            <div class="input-wrapper">
+              <input type="text" formControlName="whatsapp" placeholder="Ej: +54 ...">
+            </div>
+          </div>
+          <div class="form-field">
+            <label>Teléfono Fijo (Opcional)</label>
+            <div class="input-wrapper">
+              <input type="text" formControlName="telefono" placeholder="Número de contacto">
+            </div>
+          </div>
         </div>
-        <div class="form-group">
-          <label>Instagram / Redes</label>
-          <input type="text" formControlName="instagram" class="form-input" placeholder="@usuario">
+      </div>
+    </div>
+
+    <!-- Sección 4: Instructores -->
+    <div class="modal-section">
+      <div class="section-badge">4</div>
+      <div class="section-content">
+        <div class="flex-header">
+          <h4 class="section-title">Staff de Instructores</h4>
+          <button type="button" class="btn-add-inst" (click)="addInstructor()">
+            <svg viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+            Agregar Instructor
+          </button>
+        </div>
+
+        <div formArrayName="instructores" class="instructors-form-stack">
+          @for (inst of instructores.controls; track $index) {
+            <div [formGroupName]="$index" class="instructor-form-card">
+              <div class="inst-card-header">
+                <span class="inst-number">#{{ $index + 1 }}</span>
+                @if (instructores.length > 1) {
+                  <button type="button" class="btn-delete-inst" (click)="removeInstructor($index)">
+                    <svg viewBox="0 0 24 24"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/><line x1="10" y1="11" x2="10" y2="17"/><line x1="14" y1="11" x2="14" y2="17"/></svg>
+                  </button>
+                }
+              </div>
+
+              <div class="input-grid">
+                <div class="form-field flex-2">
+                  <label>Nombre y Apellido</label>
+                  <div class="input-wrapper">
+                    <input type="text" formControlName="nombre">
+                  </div>
+                </div>
+                <div class="form-field">
+                  <label>Rol</label>
+                  <div class="input-wrapper">
+                    <select formControlName="rol">
+                      <option value="Maestro">Maestro</option>
+                      <option value="Instructor">Instructor</option>
+                    </select>
+                  </div>
+                </div>
+                <div class="form-field">
+                  <label>Graduación</label>
+                  <div class="input-wrapper">
+                    <select formControlName="graduacion">
+                      @for (grad of masterData.getGraduations('DAN'); track grad.value) {
+                        <option [value]="grad.label">{{ grad.label }}</option>
+                      }
+                    </select>
+                  </div>
+                </div>
+                <div class="form-field">
+                  <label>DNI</label>
+                  <div class="input-wrapper">
+                    <input type="text" formControlName="dni">
+                  </div>
+                </div>
+                <div class="form-field">
+                  <label>Teléfono (Opcional)</label>
+                  <div class="input-wrapper">
+                    <input type="text" formControlName="telefono">
+                  </div>
+                </div>
+                <div class="form-field flex-2">
+                  <label>Email Personal (Opcional)</label>
+                  <div class="input-wrapper">
+                    <input type="email" formControlName="email">
+                  </div>
+                </div>
+              </div>
+            </div>
+          }
         </div>
       </div>
     </div>

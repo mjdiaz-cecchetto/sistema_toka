@@ -1,8 +1,8 @@
 import { ChangeDetectionStrategy, Component, inject, signal, computed } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { FormsModule, ReactiveFormsModule, FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { FormsModule, ReactiveFormsModule, FormBuilder, FormGroup, Validators, FormArray } from '@angular/forms';
 import { SchoolService } from '../../infrastructure/services/school.service';
-import { School } from '../../models/school.interface';
+import { School, Instructor } from '../../models/school.interface';
 import { ModalComponent } from '../../shared/components/modal/modal.component';
 import { MasterDataService } from '../../infrastructure/services/master-data.service';
 
@@ -21,20 +21,17 @@ export class SchoolsComponent {
 
   isModalOpen = signal(false);
   selectedSchool = signal<School | null>(null);
+  logoPreview = signal<string | null>(null);
+  
   schoolForm: FormGroup;
 
   constructor() {
     this.schoolForm = this.fb.group({
       nombre: ['', [Validators.required]],
       sigla: [''],
+      logo: [''],
       status: ['activa'],
-      instructor: this.fb.group({
-        nombre: ['', [Validators.required]],
-        dni: ['', [Validators.required]],
-        graduacion: ['1° Dan', [Validators.required]],
-        telefono: ['', [Validators.required]],
-        email: ['', [Validators.required, Validators.email]]
-      }),
+      instructores: this.fb.array([]),
       ubicacion: this.fb.group({
         pais: ['Argentina', [Validators.required]],
         provincia: ['', [Validators.required]],
@@ -43,9 +40,9 @@ export class SchoolsComponent {
         cp: ['']
       }),
       contacto: this.fb.group({
-        telefono: ['', [Validators.required]],
+        telefono: [''],
         whatsapp: [''],
-        email: ['', [Validators.required, Validators.email]],
+        email: ['', [Validators.email]],
         web: [''],
         facebook: [''],
         instagram: ['']
@@ -53,18 +50,68 @@ export class SchoolsComponent {
     });
   }
 
+  get instructores() {
+    return this.schoolForm.get('instructores') as FormArray;
+  }
+
+  createInstructorFormGroup(instructor?: Instructor): FormGroup {
+    return this.fb.group({
+      nombre: [instructor?.nombre || '', [Validators.required]],
+      dni: [instructor?.dni || '', [Validators.required]],
+      graduacion: [instructor?.graduacion || '1° Dan', [Validators.required]],
+      rol: [instructor?.rol || 'Instructor', [Validators.required]],
+      telefono: [instructor?.telefono || ''],
+      email: [instructor?.email || '', [Validators.email]]
+    });
+  }
+
+  addInstructor() {
+    this.instructores.push(this.createInstructorFormGroup());
+  }
+
+  removeInstructor(index: number) {
+    this.instructores.removeAt(index);
+  }
+
+  onLogoSelected(event: Event) {
+    const file = (event.target as HTMLInputElement).files?.[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onload = () => {
+        const base64 = reader.result as string;
+        this.logoPreview.set(base64);
+        this.schoolForm.get('logo')?.setValue(base64);
+      };
+      reader.readAsDataURL(file);
+    }
+  }
+
   openCreateModal() {
     this.selectedSchool.set(null);
+    this.logoPreview.set(null);
     this.schoolForm.reset({
       status: 'activa',
-      ubicacion: { pais: 'Argentina' },
-      instructor: { graduacion: '1° Dan' }
+      ubicacion: { pais: 'Argentina' }
     });
+    this.instructores.clear();
+    this.addInstructor();
     this.isModalOpen.set(true);
   }
 
   openEditModal(school: School) {
     this.selectedSchool.set(school);
+    this.logoPreview.set(school.logo || null);
+    
+    // Clear and fill instructores FormArray
+    this.instructores.clear();
+    if (school.instructores && school.instructores.length > 0) {
+      school.instructores.forEach(inst => {
+        this.instructores.push(this.createInstructorFormGroup(inst));
+      });
+    } else {
+      this.addInstructor();
+    }
+
     this.schoolForm.patchValue(school);
     this.isModalOpen.set(true);
   }
@@ -77,6 +124,13 @@ export class SchoolsComponent {
   saveSchool() {
     if (this.schoolForm.invalid) {
       this.schoolForm.markAllAsTouched();
+      const invalidFields = this.getInvalidFields(this.schoolForm);
+      alert('Por favor, complete todos los campos requeridos: ' + invalidFields.join(', '));
+      return;
+    }
+
+    if (this.instructores.length === 0) {
+      alert('Debe agregar al menos un instructor.');
       return;
     }
 
@@ -91,5 +145,22 @@ export class SchoolsComponent {
     } catch (e: any) {
       alert(e.message);
     }
+  }
+
+  private getInvalidFields(form: FormGroup | FormArray): string[] {
+    const invalid: string[] = [];
+    const controls: any = (form instanceof FormGroup) ? form.controls : (form as FormArray).controls;
+    
+    Object.keys(controls).forEach(key => {
+      const control = controls[key];
+      if (control.invalid) {
+        if (control instanceof FormGroup || control instanceof FormArray) {
+          invalid.push(...this.getInvalidFields(control).map(childKey => `${key} -> ${childKey}`));
+        } else {
+          invalid.push(key);
+        }
+      }
+    });
+    return invalid;
   }
 }

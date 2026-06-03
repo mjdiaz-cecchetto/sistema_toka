@@ -13,7 +13,7 @@ export class ModalComponent {
   title = input.required<string>();
   subtitle = input<string>('');
   submitLabel = input<string>('Confirmar');
-  size = input<'md' | 'lg'>('md');
+  size = input<'md' | 'lg' | 'xl'>('md');
   
   close = output<void>();
   submit = output<void>();

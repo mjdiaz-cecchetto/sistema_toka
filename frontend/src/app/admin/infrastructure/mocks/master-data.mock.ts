@@ -15,6 +15,11 @@ export const GRADUATIONS_MOCK: Graduation[] = [
   { value: '2D', label: '2° Dan', type: 'DAN', order: 12 },
   { value: '3D', label: '3° Dan', type: 'DAN', order: 13 },
   { value: '4D', label: '4° Dan', type: 'DAN', order: 14 },
+  { value: '5D', label: '5° Dan', type: 'DAN', order: 15 },
+  { value: '6D', label: '6° Dan', type: 'DAN', order: 16 },
+  { value: '7D', label: '7° Dan', type: 'DAN', order: 17 },
+  { value: '8D', label: '8° Dan', type: 'DAN', order: 18 },
+  { value: '9D', label: '9° Dan', type: 'DAN', order: 19 },
 ];
 
 export const CATEGORY_TEMPLATES_MOCK: CategoryTemplate[] = [

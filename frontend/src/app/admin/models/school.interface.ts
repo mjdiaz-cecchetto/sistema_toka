@@ -1,3 +1,12 @@
+export interface Instructor {
+  nombre: string;
+  dni: string;
+  graduacion: string;
+  rol: 'Maestro' | 'Instructor';
+  telefono: string;
+  email: string;
+}
+
 export interface School {
   id: string;
   nombre: string;
@@ -5,13 +14,7 @@ export interface School {
   logo?: string;
   status: 'activa' | 'inactiva';
   
-  instructor: {
-    nombre: string;
-    dni: string;
-    graduacion: string;
-    telefono: string;
-    email: string;
-  };
+  instructores: Instructor[];
   
   ubicacion: {
     pais: string;
