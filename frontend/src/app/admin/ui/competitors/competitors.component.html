@@ -1,0 +1,120 @@
+<div class="view active">
+  <div class="page-header">
+    <div class="page-title">Competidores</div>
+    <div class="page-subtitle">Gestioná los participantes del torneo.</div>
+    <div class="header-actions" style="margin-top:12px; display:flex; gap:8px">
+       <button class="btn-demo" (click)="loadDemo()">Cargar demo</button>
+       <button class="btn-demo" style="background:#f1f5f9; color:#475569" (click)="competitorService.clear()">Limpiar</button>
+    </div>
+  </div>
+
+  <div class="admin-grid">
+    <div class="section-card">
+      <div class="section-header">Nuevo Competidor</div>
+      <div class="section-body">
+        <form [formGroup]="compForm" (ngSubmit)="onSubmit()">
+          <div class="form-group">
+            <label class="form-label">Nombre completo</label>
+            <input class="form-input" formControlName="nombre" placeholder="Nombre y apellido">
+          </div>
+          <div class="form-group">
+            <label class="form-label">Club / Escuela</label>
+            <input class="form-input" formControlName="club" placeholder="Ej: Dojang Norte">
+          </div>
+          <div class="form-row">
+            <div class="form-group">
+              <label class="form-label">Edad</label>
+              <select class="form-select" formControlName="edad">
+                <option value="Infantil (6–11)">Infantil (6–11)</option>
+                <option value="Cadete (12–14)">Cadete (12–14)</option>
+                <option value="Junior (15–17)">Junior (15–17)</option>
+                <option value="Senior (18+)">Senior (18+)</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label class="form-label">Peso</label>
+              <select class="form-select" formControlName="peso">
+                <option value="-58 kg">-58 kg</option>
+                <option value="-68 kg">-68 kg</option>
+                <option value="-74 kg">-74 kg</option>
+                <option value="+80 kg">+80 kg</option>
+              </select>
+            </div>
+          </div>
+          <div class="form-row">
+            <div class="form-group">
+              <label class="form-label">Género</label>
+              <select class="form-select" formControlName="genero">
+                <option value="Masculino">Masculino</option>
+                <option value="Femenino">Femenino</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label class="form-label">Grado / Cinturón</label>
+              <select class="form-select" formControlName="grado">
+                <option value="Blanco">Blanco</option>
+                <option value="Amarillo">Amarillo</option>
+                <option value="Verde">Verde</option>
+                <option value="Azul">Azul</option>
+                <option value="Rojo">Rojo</option>
+                <option value="Negro 1er Dan">Negro 1er Dan</option>
+                <option value="Negro 2do Dan">Negro 2do Dan</option>
+              </select>
+            </div>
+          </div>
+          <button type="submit" class="btn-primary" [disabled]="compForm.invalid">
+            Agregar Competidor
+          </button>
+        </form>
+      </div>
+    </div>
+
+    <div class="section-card">
+      <div class="section-header">
+        Listado ({{ competitorService.competitors().length }})
+      </div>
+      <div class="section-body" style="padding:0">
+        <table class="data-table">
+          <thead>
+            <tr>
+              <th>Competidor</th>
+              <th>Cat.</th>
+              <th>Peso</th>
+              <th></th>
+            </tr>
+          </thead>
+          <tbody>
+            @for (c of competitorService.competitors(); track c.id) {
+              <tr>
+                <td>
+                  <div style="display:flex; align-items:center; gap:8px">
+                    <div class="avatar" [style.background]="getAvatarColor(c.nombre)">
+                      {{ c.nombre.substring(0,1) }}
+                    </div>
+                    <div>
+                      <div style="font-weight:600">{{ c.nombre }}</div>
+                      <div style="font-size:11px; color:var(--text-muted)">{{ c.grado }} · {{ c.club }}</div>
+                    </div>
+                  </div>
+                </td>
+                <td>{{ c.edad }} años ({{ c.genero }})</td>
+                <td>{{ c.peso }} kg</td>
+                <td>
+                  <button class="btn-icon" (click)="competitorService.removeCompetitor(c.id)">
+                     <svg viewBox="0 0 24 24"><path d="M3 6h18M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg>
+                  </button>
+                </td>
+              </tr>
+            } @empty {
+              <tr>
+                <td colspan="4" style="text-align:center; padding:32px; color:var(--text-muted)">
+                   No hay competidores registrados.
+                </td>
+              </tr>
+            }
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>

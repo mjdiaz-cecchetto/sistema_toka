@@ -1,0 +1,163 @@
+<div class="view active">
+  <div class="page-header">
+    <div class="header-main">
+      <div class="title-wrap">
+        <h1 class="main-title">Gestión de Escuelas</h1>
+        <p class="main-subtitle">Administra las escuelas participantes, instructores y sedes.</p>
+      </div>
+      <div class="header-actions">
+        <button class="btn-primary" (click)="openCreateModal()">
+          <svg viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+          Nueva Escuela
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <div class="schools-grid">
+    @for (school of schoolService.schools(); track school.id) {
+      <div class="school-card" [class.inactive]="school.status === 'inactiva'">
+        <div class="status-badge" [class.active]="school.status === 'activa'">
+          {{ school.status === 'activa' ? 'Activa' : 'Inactiva' }}
+        </div>
+        
+        <div class="school-header">
+          <div class="school-logo">
+            @if (school.logo) {
+              <img [src]="school.logo" [alt]="school.nombre">
+            } @else {
+              <div class="logo-placeholder">{{ school.sigla || school.nombre.substring(0, 2) }}</div>
+            }
+          </div>
+          <div class="school-info">
+            <h3 class="school-name">{{ school.nombre }}</h3>
+            <span class="school-sigla">{{ school.sigla || 'Sin sigla' }}</span>
+          </div>
+        </div>
+
+        <div class="school-body">
+          <div class="body-section">
+            <div class="section-label">Instructor Principal</div>
+            <div class="instructor-name">{{ school.instructor.nombre }}</div>
+            <div class="instructor-rank">{{ school.instructor.graduacion }}</div>
+          </div>
+
+          <div class="body-section">
+            <div class="section-label">Ubicación</div>
+            <div class="location-text">
+              {{ school.ubicacion.ciudad }}, {{ school.ubicacion.provincia }}
+            </div>
+            <div class="address-text">{{ school.ubicacion.direccion }}</div>
+          </div>
+        </div>
+
+        <div class="school-footer">
+          <div class="social-links">
+            @if (school.contacto.whatsapp) { <span class="social-icon">WA</span> }
+            @if (school.contacto.instagram) { <span class="social-icon">IG</span> }
+          </div>
+          <div class="card-actions">
+            <button class="btn-manage" (click)="openEditModal(school)">
+              <svg viewBox="0 0 24 24"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"/></svg>
+              Gestionar
+            </button>
+            <button class="btn-status-toggle" [class.active]="school.status === 'activa'" (click)="toggleStatus(school.id, $event)" [title]="school.status === 'activa' ? 'Desactivar' : 'Activar'">
+              <svg viewBox="0 0 24 24"><path d="M18.36 6.64a9 9 0 1 1-12.73 0"/><line x1="12" y1="2" x2="12" y2="12"/></svg>
+            </button>
+          </div>
+        </div>
+      </div>
+    }
+  </div>
+</div>
+
+<!-- Modal de Escuela -->
+<app-modal 
+  [isOpen]="isModalOpen()" 
+  [title]="selectedSchool() ? 'Editar Escuela' : 'Registrar Nueva Escuela'" 
+  [subtitle]="'Completa la información detallada de la escuela e instructor.'"
+  submitLabel="Guardar Escuela"
+  size="lg"
+  (close)="isModalOpen.set(false)"
+  (submit)="saveSchool()">
+  
+  <form [formGroup]="schoolForm" class="school-form">
+    <!-- Información General -->
+    <div class="form-section">
+      <h4 class="section-title">Información General</h4>
+      <div class="form-grid">
+        <div class="form-group">
+          <label>Nombre de la Escuela *</label>
+          <input type="text" formControlName="nombre" class="form-input" placeholder="Ej: Dojang Dragón Rojo">
+        </div>
+        <div class="form-group">
+          <label>Sigla (Opcional)</label>
+          <input type="text" formControlName="sigla" class="form-input" placeholder="Ej: DDR">
+        </div>
+      </div>
+    </div>
+
+    <!-- Instructor -->
+    <div class="form-section" formGroupName="instructor">
+      <h4 class="section-title">Instructor Principal</h4>
+      <div class="form-grid">
+        <div class="form-group">
+          <label>Nombre Completo *</label>
+          <input type="text" formControlName="nombre" class="form-input" placeholder="Nombre y Apellido">
+        </div>
+        <div class="form-group">
+          <label>Graduación *</label>
+          <select formControlName="graduacion" class="form-input">
+            @for (grad of masterData.graduations(); track grad.value) {
+              <option [value]="grad.label">{{ grad.label }}</option>
+            }
+          </select>
+        </div>
+      </div>
+      <div class="form-grid">
+        <div class="form-group">
+          <label>DNI *</label>
+          <input type="text" formControlName="dni" class="form-input">
+        </div>
+        <div class="form-group">
+          <label>Teléfono *</label>
+          <input type="text" formControlName="telefono" class="form-input">
+        </div>
+      </div>
+    </div>
+
+    <!-- Ubicación -->
+    <div class="form-section" formGroupName="ubicacion">
+      <h4 class="section-title">Ubicación y Sede</h4>
+      <div class="form-grid">
+        <div class="form-group">
+          <label>Provincia *</label>
+          <input type="text" formControlName="provincia" class="form-input">
+        </div>
+        <div class="form-group">
+          <label>Ciudad *</label>
+          <input type="text" formControlName="ciudad" class="form-input">
+        </div>
+      </div>
+      <div class="form-group">
+        <label>Dirección *</label>
+        <input type="text" formControlName="direccion" class="form-input">
+      </div>
+    </div>
+
+    <!-- Contacto -->
+    <div class="form-section" formGroupName="contacto">
+      <h4 class="section-title">Contacto de la Escuela</h4>
+      <div class="form-grid">
+        <div class="form-group">
+          <label>Email *</label>
+          <input type="email" formControlName="email" class="form-input">
+        </div>
+        <div class="form-group">
+          <label>Instagram / Redes</label>
+          <input type="text" formControlName="instagram" class="form-input" placeholder="@usuario">
+        </div>
+      </div>
+    </div>
+  </form>
+</app-modal>

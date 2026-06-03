@@ -1,0 +1,61 @@
+<div class="view active">
+  <div class="page-header">
+    <div class="page-title">Mis Torneos</div>
+    <div class="page-subtitle">Organizá y gestioná tus torneos de taekwondo desde un solo lugar.</div>
+  </div>
+  <div class="torneos-grid">
+    @for (tournament of tournamentService.tournaments(); track tournament.id) {
+      <app-tournament-card [tournament]="tournament" />
+    }
+    
+    <div class="card-create" (click)="isModalOpen.set(true)">
+      <div class="create-icon">+</div>
+      <div class="create-title">Crear nuevo torneo</div>
+      <p class="create-sub">Agregá un torneo o competencia a tu cuenta.</p>
+    </div>
+  </div>
+</div>
+
+<app-modal 
+  [isOpen]="isModalOpen()" 
+  title="Nuevo torneo" 
+  subtitle="Completá la información básica del torneo."
+  submitLabel="Crear torneo"
+  (close)="isModalOpen.set(false)"
+  (submit)="onCreateTournament()">
+  
+  <form [formGroup]="tournamentForm">
+    <div class="form-group" style="margin-bottom:12px">
+      <label class="form-label">Nombre del torneo</label>
+      <input class="form-input" formControlName="name" placeholder="Ej: Copa Provincial 2025">
+    </div>
+    <div class="form-row" style="display:flex; gap:12px; margin-bottom:12px">
+      <div class="form-group" style="flex:1">
+        <label class="form-label">Fecha</label>
+        <input class="form-input" type="date" formControlName="date">
+      </div>
+      <div class="form-group" style="flex:1">
+        <label class="form-label">Estado</label>
+        <select class="form-select" formControlName="status">
+          <option value="borrador">Borrador</option>
+          <option value="inscripcion_abierta">Inscripción abierta</option>
+          <option value="inscripcion_cerrada">Inscripción cerrada</option>
+          <option value="en_curso">En curso</option>
+          <option value="finalizado">Finalizado</option>
+        </select>
+      </div>
+    </div>
+    <div class="form-group" style="margin-bottom:12px">
+      <label class="form-label">Sede / Lugar</label>
+      <input class="form-input" formControlName="place" placeholder="Ej: Polideportivo, Salta">
+    </div>
+    <div class="form-group" style="margin-bottom:12px">
+      <label class="form-label">Organizador</label>
+      <input class="form-input" formControlName="organizer" placeholder="Ej: Federación Salteña">
+    </div>
+    <div class="form-group">
+      <label class="form-label">Descripción</label>
+      <textarea class="form-input" formControlName="description" rows="2" placeholder="Breve detalle del torneo..."></textarea>
+    </div>
+  </form>
+</app-modal>

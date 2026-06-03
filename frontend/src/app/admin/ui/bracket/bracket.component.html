@@ -1,0 +1,77 @@
+<div class="view active">
+  <div class="page-header">
+    <div class="page-title">Llaves</div>
+    <div class="page-subtitle">Bracket de eliminación directa por categoría.</div>
+  </div>
+
+  @if (competitorService.categories().length > 0) {
+    <div class="cat-tabs">
+      @for (cat of competitorService.categories(); track cat.key) {
+        <button class="cat-tab" 
+                [class.active]="activeCatKey() === cat.key"
+                (click)="activeCatKey.set(cat.key)">
+          {{ cat.edad }} · {{ cat.peso }} · {{ cat.genero }} ({{ cat.competitors.length }})
+        </button>
+      }
+    </div>
+
+    <div id="bracket-container">
+      @if (currentCategory() && currentCategory()!.competitors.length >= 2) {
+        <div class="bracket-wrap">
+          <div class="bracket">
+            @for (round of bracketRounds(); track $index; let idx = $index) {
+              <div class="round-col">
+                <div class="round-label">{{ round.label }}</div>
+                @for (m of round.matchups; track m.mk) {
+                  <div class="matchup">
+                    @if (m.b === 'BYE') {
+                      <div class="fighter-slot slot-bye">{{ m.a }} (bye)</div>
+                    } @else {
+                      <div class="fighter-slot" 
+                           [class.slot-winner]="m.winner === m.a"
+                           [class.slot-empty]="m.a === '?'"
+                           (click)="pickWinner(m.mk, m.a)">
+                        {{ m.a === '?' ? 'Por definir' : m.a }}{{ m.winner === m.a ? ' ✓' : '' }}
+                      </div>
+                      <div class="vs-sep">vs</div>
+                      <div class="fighter-slot" 
+                           [class.slot-winner]="m.winner === m.b"
+                           [class.slot-empty]="m.b === '?'"
+                           (click)="pickWinner(m.mk, m.b)">
+                        {{ m.b === '?' ? 'Por definir' : m.b }}{{ m.winner === m.b ? ' ✓' : '' }}
+                      </div>
+                    }
+                  </div>
+                }
+              </div>
+              @if (idx < bracketRounds().length - 1) {
+                <div class="connector"></div>
+              }
+            }
+
+            <div class="champion-col">
+              <div class="champion-label">Campeón</div>
+              <div class="champion-name">
+                @if (champion()) {
+                  <div class="trophy-icon">🏆</div>
+                  <div class="champion-text">{{ champion() }}</div>
+                } @else {
+                  <div style="color:var(--text-muted);font-size:13px">Por definir</div>
+                }
+              </div>
+            </div>
+          </div>
+        </div>
+        <p class="hint-text">Tocá un nombre para marcarlo como ganador del combate. Volvé a tocarlo para desmarcar.</p>
+      } @else {
+        <div class="empty-state" style="padding:40px">
+          Se necesitan al menos 2 competidores en esta categoría.
+        </div>
+      }
+    </div>
+  } @else {
+    <div class="empty-state" style="padding:40px">
+      Registrá competidores para ver las llaves.
+    </div>
+  }
+</div>

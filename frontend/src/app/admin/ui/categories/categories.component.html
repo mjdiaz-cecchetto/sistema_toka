@@ -1,0 +1,135 @@
+<div class="view active">
+  <div class="page-header">
+    <div class="header-main">
+      <div class="title-wrap">
+        <h1 class="main-title">Configuración de Categorías</h1>
+        <p class="main-subtitle">Definición oficial de divisiones por peso, edad y género para el sistema.</p>
+      </div>
+      <div class="header-actions">
+        <div class="search-box">
+          <svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+          <input type="text" placeholder="Buscar categoría..." (input)="onSearch($event)">
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="categories-container">
+    @for (group of categoriesByAge(); track group.name) {
+      <div class="age-group-section">
+        <div class="section-title-line">
+          <h2 class="group-title">{{ group.name }}</h2>
+          <div class="title-accent"></div>
+        </div>
+        
+        <div class="templates-grid">
+          <!-- GUP Section -->
+          @if (group.templates.some(t => t.tipo === 'GUP')) {
+            <div class="template-card">
+              <div class="card-header gup">
+                <div class="header-label">{{ group.name.toUpperCase() }} GUP</div>
+                <div class="header-sub">(Blanco a Punta Roja)</div>
+              </div>
+              <div class="weight-table-container">
+                <table class="weight-table">
+                  <thead>
+                    <tr>
+                      <th>
+                        Masculino 
+                        <button class="btn-edit-inline" (click)="openEditWeights(group.templates.find(t => t.tipo === 'GUP' && t.genero === 'Masculino')!)">
+                          <svg viewBox="0 0 24 24"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"/></svg>
+                        </button>
+                      </th>
+                      <th>
+                        Femenino
+                        <button class="btn-edit-inline" (click)="openEditWeights(group.templates.find(t => t.tipo === 'GUP' && t.genero === 'Femenino')!)">
+                          <svg viewBox="0 0 24 24"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"/></svg>
+                        </button>
+                      </th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    @for (row of getWeightPairs(group.templates.filter(t => t.tipo === 'GUP')); track $index) {
+                      <tr>
+                        <td>{{ row.male }}</td>
+                        <td>{{ row.female }}</td>
+                      </tr>
+                    }
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          }
+
+          <!-- DAN Section -->
+          @if (group.templates.some(t => t.tipo === 'DAN')) {
+            <div class="template-card house-dan">
+              <div class="card-header dan">
+                <div class="header-label">{{ group.name.toUpperCase() }} DAN</div>
+                <div class="header-sub">(Cinturones Negros)</div>
+              </div>
+              <div class="weight-table-container">
+                <table class="weight-table">
+                  <thead>
+                    <tr>
+                      <th>
+                        Masculino
+                        <button class="btn-edit-inline" (click)="openEditWeights(group.templates.find(t => t.tipo === 'DAN' && t.genero === 'Masculino')!)">
+                          <svg viewBox="0 0 24 24"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"/></svg>
+                        </button>
+                      </th>
+                      <th>
+                        Femenino
+                        <button class="btn-edit-inline" (click)="openEditWeights(group.templates.find(t => t.tipo === 'DAN' && t.genero === 'Femenino')!)">
+                          <svg viewBox="0 0 24 24"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"/></svg>
+                        </button>
+                      </th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    @for (row of getWeightPairs(group.templates.filter(t => t.tipo === 'DAN')); track $index) {
+                      <tr>
+                        <td>{{ row.male }}</td>
+                        <td>{{ row.female }}</td>
+                      </tr>
+                    }
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          }
+        </div>
+      </div>
+    }
+  </div>
+</div>
+
+<!-- Modal para Editar Pesos -->
+<app-modal 
+  [isOpen]="isEditModalOpen()" 
+  title="Gestionar Pesos" 
+  [subtitle]="'Editando pesos para: ' + (selectedTemplate()?.nombre || '')"
+  submitLabel="Guardar Cambios"
+  (close)="isEditModalOpen.set(false)"
+  (submit)="saveWeights()">
+  
+  <div class="edit-weights-list">
+    @for (weight of tempWeights(); track $index) {
+      <div class="weight-edit-row">
+        <div class="input-suffix-wrap">
+          <input class="form-input" 
+                 [value]="weight" 
+                 placeholder="Ej: -54 o +70"
+                 (input)="updateWeight($index, weightInput.value)" #weightInput>
+          <span class="suffix" *ngIf="weight.toLowerCase() !== 'sin división'">kg</span>
+        </div>
+        <button class="btn-remove-weight" (click)="removeWeight($index)">
+          <svg viewBox="0 0 24 24"><path d="M3 6h18m-2 0v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6m3 0V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2"/></svg>
+        </button>
+      </div>
+    }
+    <button class="btn-add-weight" (click)="addWeight()">
+      + Agregar Nueva Clase de Peso
+    </button>
+  </div>
+</app-modal>

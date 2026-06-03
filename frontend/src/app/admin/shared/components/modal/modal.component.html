@@ -1,0 +1,11 @@
+<div class="modal-overlay" [class.open]="isOpen()" (click)="onOutsideClick($event)">
+  <div class="modal" [class.size-lg]="size() === 'lg'">
+    <div class="modal-title">{{ title() }}</div>
+    <p class="modal-sub">{{ subtitle() }}</p>
+    <ng-content />
+    <div class="modal-actions">
+      <button class="btn-cancel" (click)="close.emit()">Cancelar</button>
+      <button class="btn-submit" (click)="submit.emit()">{{ submitLabel() }}</button>
+    </div>
+  </div>
+</div>
