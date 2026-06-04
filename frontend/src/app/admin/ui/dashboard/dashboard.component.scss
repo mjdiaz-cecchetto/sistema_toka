@@ -2,13 +2,21 @@
 .page-title { font-size: 28px; font-weight: 700; letter-spacing: -0.6px; }
 .page-subtitle { font-size: 16px; color: var(--text-secondary); margin-top: 6px; }
 
-.torneos-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 24px; }
+.torneos-grid { 
+  display: grid; 
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); 
+  gap: 20px; 
+
+  @media (max-width: 480px) {
+    grid-template-columns: 1fr;
+  }
+}
 
 .card-create { 
   background: var(--card-bg); 
   border-radius: var(--radius); 
   border: 2px dashed var(--border); 
-  min-height: 280px; 
+  height: 420px; 
   display: flex; 
   flex-direction: column; 
   align-items: center; 

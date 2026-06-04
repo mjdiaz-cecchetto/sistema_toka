@@ -1,19 +1,32 @@
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
 :root {
-  --accent: #E8521A; 
-  --accent-h: #D0461A; 
-  --accent-light: #FEF0EA;
-  --sidebar-bg: #FFFFFF; 
+  /* Colores oficiales de la bandera de Santiago del Estero */
+  --accent: #002B7A;        /* Azul profundo */
+  --accent-h: #001F5C;      /* Azul hover */
+  --accent-light: #E6EBFA;  /* Azul muy suave */
+
+  --danger: #E81123;        /* Rojo santiagueño vibrante */
+  --danger-h: #C50F1E;
+
+  --warning: #FCD116;       /* Amarillo sol (oro) */
+  --warning-light: #FFF9E6;
+
+  --sidebar-bg: #FFFFFF;
   --sidebar-w: 220px;
-  --main-bg: #F6F5F2; 
+
+  --main-bg: #F5F7FA;
   --card-bg: #FFFFFF;
-  --text-primary: #1A1A18; 
-  --text-secondary: #6B6B65; 
-  --text-muted: #9A9A94;
-  --border: #E8E7E2; 
+
+  --text-primary: #1C2430;
+  --text-secondary: #5E6B7A;
+  --text-muted: #94A0AE;
+
+  --border: #DCE4EE;
+
   --radius: 12px;
-  --shadow: 0 1px 3px rgba(0,0,0,0.08); 
+
+  --shadow: 0 1px 3px rgba(0,0,0,0.08);
   --shadow-md: 0 4px 12px rgba(0,0,0,0.10);
 }
 

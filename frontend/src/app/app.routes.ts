@@ -30,16 +30,6 @@ export const routes: Routes = [
         path: 'llaves',
         loadComponent: () => import('./admin/ui/bracket/bracket.component').then(m => m.BracketComponent)
       },
-      /*
-      {
-        path: 'config',
-        loadComponent: () => import('./admin/ui/config/config.component').then(m => m.ConfigComponent)
-      },
-      {
-        path: 'soporte',
-        loadComponent: () => import('./admin/ui/soporte/soporte.component').then(m => m.SoporteComponent)
-      }
-      */
     ]
   }
 ];

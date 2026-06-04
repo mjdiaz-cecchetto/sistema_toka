@@ -3,7 +3,10 @@
     <div class="logo-icon">
       <svg viewBox="0 0 24 24"><path d="M12 2L3 7l9 5 9-5-9-5zM3 12l9 5 9-5M3 17l9 5 9-5"/></svg>
     </div>
-    <span class="logo-text">TorneoHub</span>
+    <span class="logo-text">Sistema Toka</span>
+    <button class="mobile-close" (click)="close.emit()">
+      <svg viewBox="0 0 24 24"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+    </button>
   </div>
   <nav class="sidebar-nav">
     <a class="nav-item" routerLink="/" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}">

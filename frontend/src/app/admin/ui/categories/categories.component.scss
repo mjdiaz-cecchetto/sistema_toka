@@ -5,8 +5,36 @@
 .group-title { font-size: 24px; font-weight: 800; color: var(--text-primary); letter-spacing: -0.5px; white-space: nowrap; }
 .title-accent { height: 4px; background: #e2e8f0; flex: 1; border-radius: 2px; }
 
-.header-main { display: flex; justify-content: space-between; align-items: center; margin-bottom: 32px; }
-.search-box { position: relative; background: white; border: 1.5px solid var(--border); border-radius: 14px; display: flex; align-items: center; padding: 0 16px; width: 320px; box-shadow: var(--shadow-sm); transition: all .2s; }
+.header-main { 
+  display: flex; 
+  justify-content: space-between; 
+  align-items: flex-start; 
+  margin-bottom: 32px;
+  gap: 20px;
+
+  @media (max-width: 768px) {
+    flex-direction: column;
+    align-items: stretch;
+    margin-bottom: 24px;
+  }
+}
+
+.search-box { 
+  position: relative; 
+  background: white; 
+  border: 1.5px solid var(--border); 
+  border-radius: 14px; 
+  display: flex; 
+  align-items: center; 
+  padding: 0 16px; 
+  width: 320px; 
+  box-shadow: var(--shadow-sm); 
+  transition: all .2s; 
+
+  @media (max-width: 768px) {
+    width: 100%;
+  }
+}
 .search-box:focus-within { border-color: var(--accent); box-shadow: 0 0 0 4px rgba(59, 130, 246, 0.1); }
 .search-box svg { width: 18px; height: 18px; fill: none; stroke: var(--text-muted); stroke-width: 2.5; margin-right: 12px; }
 .search-box input { border: none; padding: 12px 0; outline: none; font-size: 15px; width: 100%; color: var(--text-primary); background: transparent; }
@@ -15,7 +43,16 @@
 
 .categories-container { display: flex; flex-direction: column; gap: 48px; padding-bottom: 60px; }
 
-.templates-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(480px, 1fr)); gap: 32px; }
+.templates-grid { 
+  display: grid; 
+  grid-template-columns: repeat(auto-fit, minmax(350px, 1fr)); 
+  gap: 24px; 
+
+  @media (max-width: 768px) {
+    grid-template-columns: 1fr;
+    gap: 16px;
+  }
+}
 
 .template-card { background: white; border-radius: 20px; border: 1px solid var(--border); overflow: hidden; box-shadow: var(--shadow-md); transition: transform .2s; }
 .template-card:hover { transform: translateY(-4px); }
