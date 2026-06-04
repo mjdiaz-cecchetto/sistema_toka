@@ -64,19 +64,19 @@ export class TournamentDetailComponent {
   activeTab = signal<'general' | 'modalidades' | 'escuelas' | 'categorias'>('general');
 
   // General configuration form
-  editForm = this.fb.nonNullable.group({
+  editForm = this.fb.group({
     name: ['', Validators.required],
     date: ['', Validators.required],
     place: ['', Validators.required],
     organizer: ['', Validators.required],
-    description: ['', Validators.required],
+    description: [''], // OPCIONAL
     organizerSchoolId: [''],
     logoEmoji: ['🏆', Validators.required],
     status: ['borrador' as TournamentStatus, Validators.required],
-    registrationDeadline: [''],
-    maxCompetitors: [300, [Validators.required, Validators.min(1)]],
-    maxSpectators: [1000, [Validators.required, Validators.min(0)]],
-    numAreas: [2, [Validators.required, Validators.min(1)]]
+    registrationDeadline: [''], // OPCIONAL
+    maxCompetitors: [undefined as number | undefined], // OPCIONAL
+    maxSpectators: [undefined as number | undefined], // OPCIONAL
+    numAreas: [undefined as number | undefined] // OPCIONAL
   });
 
   // Signals for dynamic configurations
@@ -111,9 +111,9 @@ export class TournamentDetailComponent {
           logoEmoji: t.logoEmoji || '🏆',
           status: t.status,
           registrationDeadline: t.registrationDeadline || '',
-          maxCompetitors: t.maxCompetitors || 300,
-          maxSpectators: t.maxSpectators || 1000,
-          numAreas: t.numAreas || 2
+          maxCompetitors: t.maxCompetitors,
+          maxSpectators: t.maxSpectators,
+          numAreas: t.numAreas
         });
         this.selectedModalities.set(t.modalities || ['lucha_individual', 'tul_individual']);
         this.excludedSchools.set(t.excludedSchools || []);
@@ -129,6 +129,18 @@ export class TournamentDetailComponent {
     { key: 'lucha_equipos', label: 'Lucha por Equipos' },
     { key: 'tul_equipos', label: 'Tul por Equipos' }
   ];
+
+  // Auto-select organizer when school is selected
+  onOrganizerSchoolChange(schoolId: string) {
+    const school = this.schools().find(s => s.id === schoolId);
+    if (school && school.instructores && school.instructores.length > 0) {
+      // Auto-select the first instructor (Maestro) as organizer
+      const mainInstructor = school.instructores.find(i => i.rol === 'Maestro') || school.instructores[0];
+      this.editForm.patchValue({
+        organizer: mainInstructor.nombre
+      });
+    }
+  }
 
   getStatusLabel(status: TournamentStatus): string {
     const labels: Record<TournamentStatus, string> = {
@@ -181,7 +193,18 @@ export class TournamentDetailComponent {
     if (this.editForm.valid) {
       const val = this.editForm.getRawValue();
       const updatedData = {
-        ...val,
+        name: val.name || '',
+        date: val.date || '',
+        place: val.place || '',
+        organizer: val.organizer || '',
+        description: val.description || undefined,
+        organizerSchoolId: val.organizerSchoolId || undefined,
+        logoEmoji: val.logoEmoji || '🏆',
+        status: val.status || 'borrador',
+        registrationDeadline: val.registrationDeadline || undefined,
+        maxCompetitors: val.maxCompetitors || undefined,
+        maxSpectators: val.maxSpectators || undefined,
+        numAreas: val.numAreas || undefined,
         modalities: this.selectedModalities(),
         excludedSchools: this.excludedSchools(),
         excludedCategories: this.excludedCategories()
@@ -194,7 +217,7 @@ export class TournamentDetailComponent {
           { emoji: '⚡', cls: 'cover-3' }
         ];
         const selectedCover = covers[Math.floor(Math.random() * covers.length)];
-        
+
         const newId = this.tournamentService.addTournament({
           ...updatedData,
           competitorsCount: 0,

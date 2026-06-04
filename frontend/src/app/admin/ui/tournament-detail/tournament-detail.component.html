@@ -98,17 +98,18 @@
 
             <div class="form-grid-three">
               <div class="form-group-custom">
-                <label>Organizador (Texto descriptivo)</label>
-                <input formControlName="organizer" class="form-input-premium" placeholder="Ej: Asociación Provincial">
-              </div>
-              <div class="form-group-custom">
                 <label>Escuela Organizadora</label>
-                <select formControlName="organizerSchoolId" class="form-select-premium">
+                <select formControlName="organizerSchoolId" class="form-select-premium" (ngModelChange)="onOrganizerSchoolChange($event)">
                   <option value="">Seleccionar escuela...</option>
                   @for (school of schools(); track school.id) {
                     <option [value]="school.id">{{ school.nombre }} ({{ school.sigla }})</option>
                   }
                 </select>
+                <small class="field-hint">Al seleccionar, se auto-completa el organizador</small>
+              </div>
+              <div class="form-group-custom">
+                <label>Organizador</label>
+                <input formControlName="organizer" class="form-input-premium" placeholder="Ej: Asociación Provincial">
               </div>
               <div class="form-group-custom text-center">
                 <label>Logo / Icono (Emoji)</label>
@@ -141,7 +142,7 @@
                 </select>
               </div>
               <div class="form-group-custom">
-                <label>Descripción / Detalles</label>
+                <label>Descripción / Detalles (opcional)</label>
                 <textarea formControlName="description" class="form-textarea-premium" rows="2" placeholder="Detalles de la competencia..."></textarea>
               </div>
             </div>
@@ -193,28 +194,29 @@
           <div class="section-card-flat">
             <div class="card-header-accent">
               <h3>Restricciones y Cupos</h3>
-              <p>Configurá los límites de aforo y fechas límites del torneo.</p>
+              <p>Configurá los límites de aforo y fechas límites del torneo (opcional, podés completarlo después).</p>
             </div>
-            
+
             <form [formGroup]="editForm" (ngSubmit)="saveAllChanges()" class="form-layout">
               <div class="form-group-custom">
-                <label>Cantidad máxima de competidores</label>
-                <input type="number" formControlName="maxCompetitors" class="form-input-premium">
-              </div>
-              
-              <div class="form-group-custom">
-                <label>Cantidad máxima de espectadores</label>
-                <input type="number" formControlName="maxSpectators" class="form-input-premium">
+                <label>Cantidad máxima de competidores (opcional)</label>
+                <input type="number" formControlName="maxCompetitors" class="form-input-premium" placeholder="Dejar vacío para sin límite">
               </div>
 
               <div class="form-group-custom">
-                <label>Fecha límite de inscripción</label>
+                <label>Cantidad máxima de espectadores (opcional)</label>
+                <input type="number" formControlName="maxSpectators" class="form-input-premium" placeholder="Dejar vacío para sin límite">
+              </div>
+
+              <div class="form-group-custom">
+                <label>Fecha límite de inscripción (opcional)</label>
                 <input type="date" formControlName="registrationDeadline" class="form-input-premium">
               </div>
 
               <div class="form-group-custom">
-                <label>Áreas de Combate</label>
+                <label>Áreas de Combate (opcional)</label>
                 <select formControlName="numAreas" class="form-select-premium">
+                  <option [value]="undefined">Sin definir</option>
                   <option [value]="1">1 Área</option>
                   <option [value]="2">2 Áreas</option>
                   <option [value]="3">3 Áreas</option>

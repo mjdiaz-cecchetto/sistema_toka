@@ -6,14 +6,14 @@ export interface Tournament {
   date: string;
   place: string;
   organizer: string;
-  description: string;
+  description?: string; // OPCIONAL
   status: TournamentStatus;
   competitorsCount: number;
   categoriesCount: number;
   coverEmoji: string;
   coverClass: string;
   logoEmoji: string;
-  
+
   // New management fields
   maxCompetitors?: number;
   maxSpectators?: number;
