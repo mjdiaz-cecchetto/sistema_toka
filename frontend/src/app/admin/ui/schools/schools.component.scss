@@ -21,122 +21,163 @@
 .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 6px 16px rgba(232, 82, 26, 0.3); }
 .btn-primary svg { width: 18px; height: 18px; fill: none; stroke: currentColor; stroke-width: 3; }
 
-.schools-grid { 
-  display: grid; 
-  grid-template-columns: repeat(auto-fill, minmax(420px, 1fr)); 
-  gap: 28px; 
-  padding-bottom: 60px;
+/* Table Layout */
+.schools-table-wrap {
+  background: white;
+  border-radius: 20px;
+  border: 1px solid var(--border);
+  overflow: hidden;
+  box-shadow: 0 2px 12px rgba(0,0,0,0.04);
+  margin-bottom: 60px;
 }
 
-.school-card { 
-  background: white; 
-  border-radius: 28px; 
-  border: 1px solid var(--border); 
-  padding: 28px; 
-  position: relative; 
-  box-shadow: 0 4px 20px rgba(0,0,0,0.03); 
-  transition: all .3s cubic-bezier(0.4, 0, 0.2, 1);
+.schools-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-family: inherit;
+}
+
+.schools-table thead tr {
+  background: #f8fafc;
+  border-bottom: 1.5px solid var(--border);
+}
+
+.schools-table th {
+  padding: 14px 20px;
+  font-size: 11px;
+  font-weight: 800;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.8px;
+  text-align: left;
+  white-space: nowrap;
+}
+
+.th-center { text-align: center !important; }
+.td-center { text-align: center; }
+
+.schools-table tbody tr {
+  border-bottom: 1px solid #f1f5f9;
+  transition: background .15s;
+}
+.schools-table tbody tr:last-child { border-bottom: none; }
+.schools-table tbody tr:hover { background: #fafafa; }
+.schools-table tbody tr.row-inactive { opacity: 0.5; filter: grayscale(1); }
+
+.schools-table td {
+  padding: 16px 20px;
+  vertical-align: middle;
+}
+
+/* Cell: Escuela */
+.cell-school { display: flex; align-items: center; gap: 14px; }
+.table-logo {
+  width: 44px;
+  height: 44px;
+  border-radius: 14px;
+  background: #f8fafc;
+  border: 1.5px solid var(--border);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  flex-shrink: 0;
+  font-weight: 800;
+  color: var(--accent);
+  font-size: 14px;
+}
+.table-logo img { width: 100%; height: 100%; object-fit: cover; }
+.cell-school-info { display: flex; flex-direction: column; gap: 2px; }
+.cell-name { font-size: 14px; font-weight: 700; color: var(--text-primary); }
+.cell-sigla { font-size: 11px; font-weight: 700; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.5px; }
+
+/* Cell: Ubicación */
+.cell-location { display: block; font-size: 14px; font-weight: 600; color: var(--text-primary); }
+.cell-address { display: block; font-size: 12px; color: var(--text-muted); margin-top: 2px; }
+
+/* Cell: Instructores */
+.cell-instructors { display: flex; flex-direction: column; gap: 6px; }
+.cell-inst-row { display: flex; align-items: center; gap: 8px; }
+.inst-tag {
+  font-size: 10px;
+  font-weight: 800;
+  text-transform: uppercase;
+  color: var(--accent);
+  background: var(--accent-light);
+  padding: 2px 7px;
+  border-radius: 6px;
+  white-space: nowrap;
+}
+.inst-name-text { font-size: 13px; font-weight: 600; color: var(--text-primary); }
+.inst-more { font-size: 11px; color: var(--text-muted); font-weight: 600; margin-top: 2px; }
+.cell-empty { font-size: 13px; color: var(--text-muted); }
+
+/* Cell: WhatsApp */
+.cell-wa { font-size: 13px; font-weight: 600; color: var(--text-secondary); }
+
+/* Cell: Estado */
+.status-pill {
+  display: inline-block;
+  font-size: 11px;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  padding: 5px 12px;
+  border-radius: 20px;
+  background: #f1f5f9;
+  color: #64748b;
+}
+.status-pill.active { background: #dcfce7; color: #15803d; }
+
+/* Cell: Acciones */
+.row-actions { display: flex; align-items: center; justify-content: center; gap: 8px; }
+
+.btn-edit {
+  width: 36px;
+  height: 36px;
+  border-radius: 10px;
+  border: 1.5px solid var(--border);
+  background: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--text-muted);
+  cursor: pointer;
+  transition: all .2s;
+}
+.btn-edit:hover { border-color: var(--accent); color: var(--accent); background: var(--accent-light); }
+.btn-edit svg { width: 16px; height: 16px; fill: none; stroke: currentColor; stroke-width: 2.5; }
+
+.btn-toggle {
+  width: 36px;
+  height: 36px;
+  border-radius: 10px;
+  border: 1.5px solid var(--border);
+  background: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--text-muted);
+  cursor: pointer;
+  transition: all .2s;
+}
+.btn-toggle:hover { color: #dc2626; border-color: #dc2626; background: #fee2e2; }
+.btn-toggle.active { color: #15803d; border-color: #bbf7d0; background: #f0fdf4; }
+.btn-toggle svg { width: 18px; height: 18px; fill: none; stroke: currentColor; stroke-width: 2.5; }
+
+/* Empty state */
+.table-empty {
   display: flex;
   flex-direction: column;
-  gap: 24px;
+  align-items: center;
+  gap: 16px;
+  padding: 60px 20px;
+  text-align: center;
+  color: var(--text-muted);
 }
-.school-card:hover { transform: translateY(-6px); box-shadow: 0 12px 40px rgba(0,0,0,0.08); border-color: var(--accent); }
-.school-card.inactive { opacity: 0.6; filter: grayscale(1); }
+.table-empty svg { width: 48px; height: 48px; fill: none; stroke: currentColor; stroke-width: 1.2; opacity: 0.4; }
+.table-empty p { font-size: 15px; font-weight: 600; margin: 0; }
 
-.status-badge { 
-  position: absolute; 
-  top: 20px; 
-  right: 20px; 
-  font-size: 10px; 
-  font-weight: 800; 
-  text-transform: uppercase; 
-  padding: 5px 12px; 
-  border-radius: 10px; 
-  letter-spacing: 0.5px;
-}
-.status-badge.active { background: #dcfce7; color: #15803d; }
-.status-badge.inactive { background: #f1f5f9; color: #64748b; }
-
-.school-header { display: flex; align-items: center; gap: 20px; }
-.school-logo { 
-  width: 72px; 
-  height: 72px; 
-  border-radius: 20px; 
-  overflow: hidden; 
-  background: #f8fafc; 
-  border: 1.5px solid var(--border); 
-  display: flex; 
-  align-items: center; 
-  justify-content: center; 
-  box-shadow: 0 4px 10px rgba(0,0,0,0.02);
-}
-.school-logo img { width: 100%; height: 100%; object-fit: cover; }
-.logo-placeholder { font-weight: 800; color: var(--accent); font-size: 28px; }
-.school-name { font-size: 22px; font-weight: 800; color: var(--text-primary); margin: 0; line-height: 1.2; letter-spacing: -0.6px; }
-.school-sigla { font-size: 13px; font-weight: 600; color: var(--text-muted); text-transform: uppercase; margin-top: 2px; display: block; }
-
-.school-body { display: flex; flex-direction: column; gap: 20px; border-top: 1px solid #f1f5f9; padding-top: 20px; }
-.section-label { font-size: 11px; font-weight: 800; text-transform: uppercase; color: var(--text-muted); letter-spacing: 1px; margin-bottom: 8px; }
-
-.instructors-list { display: flex; flex-direction: column; gap: 10px; }
-.instructor-item { 
-  display: flex; 
-  justify-content: space-between; 
-  align-items: center; 
-  padding: 10px 14px; 
-  background: #f8fafc; 
-  border-radius: 12px;
-  border: 1px solid transparent;
-  transition: all .2s;
-}
-.instructor-item:hover { background: white; border-color: var(--accent-light); transform: scale(1.02); }
-.instructor-main { display: flex; flex-direction: column; gap: 2px; }
-.inst-role { font-size: 10px; font-weight: 800; color: var(--accent); text-transform: uppercase; }
-.inst-name { font-size: 15px; font-weight: 700; color: var(--text-primary); }
-.inst-grad { font-size: 13px; font-weight: 600; color: var(--text-secondary); background: white; padding: 2px 8px; border-radius: 6px; border: 1px solid var(--border); }
-
-.location-text { font-size: 15px; font-weight: 700; color: var(--text-primary); display: flex; align-items: center; gap: 6px; }
-.address-text { font-size: 14px; color: var(--text-secondary); margin-top: 2px; }
-
-.school-footer { border-top: 1px solid #f1f5f9; padding-top: 20px; display: flex; justify-content: space-between; align-items: center; }
-.social-links { display: flex; gap: 10px; }
-.social-icon { background: #f1f5f9; padding: 6px 10px; border-radius: 8px; font-size: 11px; font-weight: 700; color: var(--text-secondary); }
-
-.card-actions { display: flex; gap: 12px; }
-
-.btn-manage { 
-  display: flex; 
-  align-items: center; 
-  gap: 8px; 
-  background: white; 
-  border: 1.5px solid var(--border); 
-  padding: 10px 20px; 
-  border-radius: 14px; 
-  font-size: 13px; 
-  font-weight: 700; 
-  color: var(--text-primary); 
-  cursor: pointer; 
-  transition: all .2s;
-}
-.btn-manage:hover { border-color: var(--accent); color: var(--accent); background: var(--accent-light); }
-.btn-manage svg { width: 16px; height: 16px; fill: none; stroke: currentColor; stroke-width: 2.5; }
-
-.btn-status-toggle { 
-  width: 42px; 
-  height: 42px; 
-  border-radius: 14px; 
-  border: 1.5px solid var(--border); 
-  background: white; 
-  display: flex; 
-  align-items: center; 
-  justify-content: center; 
-  color: var(--text-muted); 
-  cursor: pointer; 
-  transition: all .2s;
-}
-.btn-status-toggle:hover { color: #dc2626; border-color: #dc2626; background: #fee2e2; }
-.btn-status-toggle.active { color: #15803d; }
-.btn-status-toggle svg { width: 20px; height: 20px; fill: none; stroke: currentColor; stroke-width: 2.5; }
 
 /* Modal Refinement - Stacked Layout */
 .school-modal-form { display: flex; flex-direction: column; gap: 32px; padding: 4px 10px 40px; }
@@ -204,10 +245,48 @@
 }
 
 /* Validation Styles */
-.form-field.ng-touched.ng-invalid {
+.form-field.has-error {
   label { color: #ef4444; }
   .input-wrapper { border-color: #fecaca; background: #fffafb; }
   .input-wrapper:focus-within { border-color: #ef4444; box-shadow: 0 0 0 4px rgba(239, 68, 68, 0.1); }
+}
+
+.warning-banner {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  background: #fef2f2;
+  border: 1.5px solid #fca5a5;
+  border-radius: 16px;
+  padding: 14px 20px;
+  margin-bottom: 8px;
+  animation: slideDown 0.3s ease-out;
+
+  .warning-icon {
+    width: 20px;
+    height: 20px;
+    fill: none;
+    stroke: #dc2626;
+    stroke-width: 2.5;
+    flex-shrink: 0;
+  }
+
+  .warning-message {
+    font-size: 14px;
+    font-weight: 700;
+    color: #991b1b;
+  }
+}
+
+@keyframes slideDown {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
 .input-wrapper input, 

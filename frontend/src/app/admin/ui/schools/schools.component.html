@@ -14,67 +14,91 @@
     </div>
   </div>
 
-  <div class="schools-grid">
-    @for (school of schoolService.schools(); track school.id) {
-      <div class="school-card" [class.inactive]="school.status === 'inactiva'">
-        <div class="status-badge" [class.active]="school.status === 'activa'">
-          {{ school.status === 'activa' ? 'Activa' : 'Inactiva' }}
-        </div>
-        
-        <div class="school-header">
-          <div class="school-logo">
-            @if (school.logo) {
-              <img [src]="school.logo" [alt]="school.nombre">
-            } @else {
-              <div class="logo-placeholder">{{ school.sigla || school.nombre.substring(0, 2) }}</div>
-            }
-          </div>
-          <div class="school-info">
-            <h3 class="school-name">{{ school.nombre }}</h3>
-            <span class="school-sigla">{{ school.sigla || 'Sin sigla' }}</span>
-          </div>
-        </div>
-
-        <div class="school-body">
-          <div class="body-section">
-            <div class="section-label">Instructores ({{ school.instructores.length || 0 }})</div>
-            <div class="instructors-list">
-              @for (inst of school.instructores; track $index) {
-                <div class="instructor-item">
-                  <div class="instructor-main">
-                    <span class="inst-role">{{ inst.rol }}</span>
-                    <span class="inst-name">{{ inst.nombre }}</span>
-                  </div>
-                  <span class="inst-grad">{{ inst.graduacion }}</span>
+  <div class="schools-table-wrap">
+    <table class="schools-table">
+      <thead>
+        <tr>
+          <th>Escuela</th>
+          <th>Ubicación</th>
+          <th>Instructor / Maestro</th>
+          <th>WhatsApp</th>
+          <th class="th-center">Estado</th>
+          <th class="th-center">Acciones</th>
+        </tr>
+      </thead>
+      <tbody>
+        @for (school of schoolService.schools(); track school.id) {
+          <tr [class.row-inactive]="school.status === 'inactiva'">
+            <td>
+              <div class="cell-school">
+                <div class="table-logo">
+                  @if (school.logo) {
+                    <img [src]="school.logo" [alt]="school.nombre">
+                  } @else {
+                    <span>{{ school.sigla || school.nombre.substring(0, 2) }}</span>
+                  }
                 </div>
+                <div class="cell-school-info">
+                  <span class="cell-name">{{ school.nombre }}</span>
+                  @if (school.sigla) {
+                    <span class="cell-sigla">{{ school.sigla }}</span>
+                  }
+                </div>
+              </div>
+            </td>
+            <td>
+              <span class="cell-location">{{ school.ubicacion.ciudad }}, {{ school.ubicacion.provincia }}</span>
+              <span class="cell-address">{{ school.ubicacion.direccion }}</span>
+            </td>
+            <td>
+              @if (school.instructores.length > 0) {
+                <div class="cell-instructors">
+                  @for (inst of school.instructores.slice(0, 2); track $index) {
+                    <div class="cell-inst-row">
+                      <span class="inst-tag">{{ inst.rol }}</span>
+                      <span class="inst-name-text">{{ inst.nombre }}</span>
+                    </div>
+                  }
+                  @if (school.instructores.length > 2) {
+                    <span class="inst-more">+{{ school.instructores.length - 2 }} más</span>
+                  }
+                </div>
+              } @else {
+                <span class="cell-empty">Sin instructores</span>
               }
-            </div>
-          </div>
+            </td>
+            <td>
+              @if (school.contacto.whatsapp) {
+                <span class="cell-wa">{{ school.contacto.whatsapp }}</span>
+              } @else {
+                <span class="cell-empty">—</span>
+              }
+            </td>
+            <td class="td-center">
+              <span class="status-pill" [class.active]="school.status === 'activa'">
+                {{ school.status === 'activa' ? 'Activa' : 'Inactiva' }}
+              </span>
+            </td>
+            <td class="td-center">
+              <div class="row-actions">
+                <button class="btn-edit" (click)="openEditModal(school)" title="Gestionar">
+                  <svg viewBox="0 0 24 24"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"/></svg>
+                </button>
+                <button class="btn-toggle" [class.active]="school.status === 'activa'" (click)="toggleStatus(school.id, $event)" [title]="school.status === 'activa' ? 'Desactivar' : 'Activar'">
+                  <svg viewBox="0 0 24 24"><path d="M18.36 6.64a9 9 0 1 1-12.73 0"/><line x1="12" y1="2" x2="12" y2="12"/></svg>
+                </button>
+              </div>
+            </td>
+          </tr>
+        }
+      </tbody>
+    </table>
 
-          <div class="body-section">
-            <div class="section-label">Ubicación</div>
-            <div class="location-text">
-              {{ school.ubicacion.ciudad }}, {{ school.ubicacion.provincia }}
-            </div>
-            <div class="address-text">{{ school.ubicacion.direccion }}</div>
-          </div>
-        </div>
-
-        <div class="school-footer">
-          <div class="social-links">
-            @if (school.contacto.whatsapp) { <span class="social-icon">WA</span> }
-            @if (school.contacto.instagram) { <span class="social-icon">IG</span> }
-          </div>
-          <div class="card-actions">
-            <button class="btn-manage" (click)="openEditModal(school)">
-              <svg viewBox="0 0 24 24"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"/></svg>
-              Gestionar
-            </button>
-            <button class="btn-status-toggle" [class.active]="school.status === 'activa'" (click)="toggleStatus(school.id, $event)" [title]="school.status === 'activa' ? 'Desactivar' : 'Activar'">
-              <svg viewBox="0 0 24 24"><path d="M18.36 6.64a9 9 0 1 1-12.73 0"/><line x1="12" y1="2" x2="12" y2="12"/></svg>
-            </button>
-          </div>
-        </div>
+    @if (schoolService.schools().length === 0) {
+      <div class="table-empty">
+        <svg viewBox="0 0 24 24"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></svg>
+        <p>No hay escuelas registradas aún.</p>
+        <button class="btn-primary" (click)="openCreateModal()">Registrar primera escuela</button>
       </div>
     }
   </div>
@@ -91,6 +115,13 @@
   (submit)="saveSchool()">
   
   <form [formGroup]="schoolForm" class="school-modal-form">
+    @if (errorMessage()) {
+      <div class="warning-banner">
+        <svg viewBox="0 0 24 24" class="warning-icon"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+        <span class="warning-message">{{ errorMessage() }}</span>
+      </div>
+    }
+
     <!-- Sección 1: Logo e Info General -->
     <div class="modal-section">
       <div class="section-badge">1</div>
@@ -122,7 +153,7 @@
         </div>
 
         <div class="input-grid">
-          <div class="form-field">
+          <div class="form-field" [class.has-error]="isControlInvalid(schoolForm.get('nombre'))">
             <label>Nombre de la Escuela</label>
             <div class="input-wrapper">
               <input type="text" formControlName="nombre" placeholder="Ej: Dojang Dragón Rojo">
@@ -144,20 +175,20 @@
       <div class="section-content">
         <h4 class="section-title">Ubicación y Sede</h4>
         <div class="input-grid">
-          <div class="form-field">
+          <div class="form-field" [class.has-error]="isControlInvalid(schoolForm.get('ubicacion.provincia'))">
             <label>Provincia</label>
             <div class="input-wrapper">
               <input type="text" formControlName="provincia" placeholder="Nombre de la provincia">
             </div>
           </div>
-          <div class="form-field">
+          <div class="form-field" [class.has-error]="isControlInvalid(schoolForm.get('ubicacion.ciudad'))">
             <label>Ciudad</label>
             <div class="input-wrapper">
               <input type="text" formControlName="ciudad" placeholder="Nombre de la ciudad">
             </div>
           </div>
         </div>
-        <div class="form-field full-width">
+        <div class="form-field full-width" [class.has-error]="isControlInvalid(schoolForm.get('ubicacion.direccion'))">
           <label>Dirección Completa</label>
           <div class="input-wrapper">
             <input type="text" formControlName="direccion" placeholder="Calle, número, barrio...">
@@ -172,7 +203,7 @@
       <div class="section-content">
         <h4 class="section-title">Contacto de la Escuela</h4>
         <div class="input-grid">
-          <div class="form-field">
+          <div class="form-field" [class.has-error]="isControlInvalid(schoolForm.get('contacto.email'))">
             <label>Email Oficial (Opcional)</label>
             <div class="input-wrapper">
               <input type="email" formControlName="email" placeholder="correo@ejemplo.com">
@@ -185,8 +216,8 @@
               <input type="text" formControlName="instagram" placeholder="usuario">
             </div>
           </div>
-          <div class="form-field">
-            <label>WhatsApp (Opcional)</label>
+          <div class="form-field" [class.has-error]="isControlInvalid(schoolForm.get('contacto.whatsapp'))">
+            <label>WhatsApp</label>
             <div class="input-wrapper">
               <input type="text" formControlName="whatsapp" placeholder="Ej: +54 ...">
             </div>
@@ -215,7 +246,7 @@
 
         <div formArrayName="instructores" class="instructors-form-stack">
           @for (inst of instructores.controls; track $index) {
-            <div [formGroupName]="$index" class="instructor-form-card">
+            <div [formGroup]="$any(inst)" class="instructor-form-card">
               <div class="inst-card-header">
                 <span class="inst-number">#{{ $index + 1 }}</span>
                 @if (instructores.length > 1) {
@@ -226,13 +257,13 @@
               </div>
 
               <div class="input-grid">
-                <div class="form-field flex-2">
+                <div class="form-field flex-2" [class.has-error]="isControlInvalid(inst.get('nombre'))">
                   <label>Nombre y Apellido</label>
                   <div class="input-wrapper">
                     <input type="text" formControlName="nombre">
                   </div>
                 </div>
-                <div class="form-field">
+                <div class="form-field" [class.has-error]="isControlInvalid(inst.get('rol'))">
                   <label>Rol</label>
                   <div class="input-wrapper">
                     <select formControlName="rol">
@@ -241,7 +272,7 @@
                     </select>
                   </div>
                 </div>
-                <div class="form-field">
+                <div class="form-field" [class.has-error]="isControlInvalid(inst.get('graduacion'))">
                   <label>Graduación</label>
                   <div class="input-wrapper">
                     <select formControlName="graduacion">
@@ -251,7 +282,7 @@
                     </select>
                   </div>
                 </div>
-                <div class="form-field">
+                <div class="form-field" [class.has-error]="isControlInvalid(inst.get('dni'))">
                   <label>DNI</label>
                   <div class="input-wrapper">
                     <input type="text" formControlName="dni">
@@ -263,7 +294,7 @@
                     <input type="text" formControlName="telefono">
                   </div>
                 </div>
-                <div class="form-field flex-2">
+                <div class="form-field flex-2" [class.has-error]="isControlInvalid(inst.get('email'))">
                   <label>Email Personal (Opcional)</label>
                   <div class="input-wrapper">
                     <input type="email" formControlName="email">

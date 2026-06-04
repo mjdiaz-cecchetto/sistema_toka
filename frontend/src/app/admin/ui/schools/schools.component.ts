@@ -1,6 +1,6 @@
 import { ChangeDetectionStrategy, Component, inject, signal, computed } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { FormsModule, ReactiveFormsModule, FormBuilder, FormGroup, Validators, FormArray } from '@angular/forms';
+import { FormsModule, ReactiveFormsModule, FormBuilder, FormGroup, Validators, FormArray, AbstractControl } from '@angular/forms';
 import { SchoolService } from '../../infrastructure/services/school.service';
 import { School, Instructor } from '../../models/school.interface';
 import { ModalComponent } from '../../shared/components/modal/modal.component';
@@ -22,6 +22,7 @@ export class SchoolsComponent {
   isModalOpen = signal(false);
   selectedSchool = signal<School | null>(null);
   logoPreview = signal<string | null>(null);
+  errorMessage = signal<string | null>(null);
   
   schoolForm: FormGroup;
 
@@ -41,7 +42,7 @@ export class SchoolsComponent {
       }),
       contacto: this.fb.group({
         telefono: [''],
-        whatsapp: [''],
+        whatsapp: ['', [Validators.required]],
         email: ['', [Validators.email]],
         web: [''],
         facebook: [''],
@@ -89,6 +90,7 @@ export class SchoolsComponent {
   openCreateModal() {
     this.selectedSchool.set(null);
     this.logoPreview.set(null);
+    this.errorMessage.set(null);
     this.schoolForm.reset({
       status: 'activa',
       ubicacion: { pais: 'Argentina' }
@@ -101,6 +103,7 @@ export class SchoolsComponent {
   openEditModal(school: School) {
     this.selectedSchool.set(school);
     this.logoPreview.set(school.logo || null);
+    this.errorMessage.set(null);
     
     // Clear and fill instructores FormArray
     this.instructores.clear();
@@ -122,15 +125,16 @@ export class SchoolsComponent {
   }
 
   saveSchool() {
+    this.errorMessage.set(null);
+
     if (this.schoolForm.invalid) {
       this.schoolForm.markAllAsTouched();
-      const invalidFields = this.getInvalidFields(this.schoolForm);
-      alert('Por favor, complete todos los campos requeridos: ' + invalidFields.join(', '));
+      this.errorMessage.set('Por favor, complete todos los campos requeridos marcados en rojo.');
       return;
     }
 
     if (this.instructores.length === 0) {
-      alert('Debe agregar al menos un instructor.');
+      this.errorMessage.set('Debe agregar al menos un instructor o maestro.');
       return;
     }
 
@@ -143,8 +147,12 @@ export class SchoolsComponent {
       }
       this.isModalOpen.set(false);
     } catch (e: any) {
-      alert(e.message);
+      this.errorMessage.set(e.message);
     }
+  }
+
+  isControlInvalid(control: AbstractControl | null | undefined): boolean {
+    return !!(control && control.invalid && (control.touched || control.dirty));
   }
 
   private getInvalidFields(form: FormGroup | FormArray): string[] {
