@@ -14,6 +14,31 @@
     </div>
   </div>
 
+  <div class="search-bar">
+    <div class="search-input-wrapper">
+      <svg class="search-icon" viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+      <input 
+        type="text" 
+        class="search-input" 
+        placeholder="Buscar por nombre, sigla, ciudad, provincia o instructor..." 
+        [value]="searchTerm()"
+        (input)="searchTerm.set($any($event.target).value)"
+      />
+      @if (searchTerm()) {
+        <button class="clear-search" (click)="searchTerm.set('')">
+          <svg viewBox="0 0 24 24"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+        </button>
+      }
+    </div>
+    <div class="search-results-count">
+      @if (searchTerm()) {
+        <span>{{ filteredSchools().length }} de {{ schoolService.schools().length }} escuelas</span>
+      } @else {
+        <span>{{ schoolService.schools().length }} escuelas</span>
+      }
+    </div>
+  </div>
+
   <div class="schools-table-wrap">
     <table class="schools-table">
       <thead>
@@ -27,7 +52,7 @@
         </tr>
       </thead>
       <tbody>
-        @for (school of schoolService.schools(); track school.id) {
+        @for (school of filteredSchools(); track school.id) {
           <tr [class.row-inactive]="school.status === 'inactiva'">
             <td>
               <div class="cell-school">
@@ -94,7 +119,7 @@
       </tbody>
     </table>
 
-    @if (schoolService.schools().length === 0) {
+    @if (filteredSchools().length === 0) {
       <div class="table-empty">
         <svg viewBox="0 0 24 24"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></svg>
         <p>No hay escuelas registradas aún.</p>

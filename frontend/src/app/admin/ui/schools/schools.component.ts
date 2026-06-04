@@ -23,6 +23,24 @@ export class SchoolsComponent {
   selectedSchool = signal<School | null>(null);
   logoPreview = signal<string | null>(null);
   errorMessage = signal<string | null>(null);
+  searchTerm = signal('');
+
+  filteredSchools = computed(() => {
+    const schools = this.schoolService.schools();
+    const term = this.searchTerm().toLowerCase();
+    
+    if (!term) return schools;
+    
+    return schools.filter(school => 
+      school.nombre.toLowerCase().includes(term) ||
+      school.sigla?.toLowerCase().includes(term) ||
+      school.ubicacion.ciudad.toLowerCase().includes(term) ||
+      school.ubicacion.provincia.toLowerCase().includes(term) ||
+      school.instructores.some(inst => 
+        inst.nombre.toLowerCase().includes(term)
+      )
+    );
+  });
   
   schoolForm: FormGroup;
 
