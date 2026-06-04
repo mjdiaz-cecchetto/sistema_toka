@@ -10,11 +10,19 @@ export class TournamentService {
 
   tournaments = this.tournamentsSignal.asReadonly();
 
-  addTournament(tournament: Omit<Tournament, 'id'>) {
+  addTournament(tournament: Omit<Tournament, 'id'>): string {
+    const id = Date.now().toString();
     const newTournament: Tournament = {
       ...tournament,
-      id: Date.now().toString()
+      id
     };
     this.tournamentsSignal.update(ts => [...ts, newTournament]);
+    return id;
+  }
+
+  updateTournament(id: string, updatedTournament: Partial<Tournament>) {
+    this.tournamentsSignal.update(ts => 
+      ts.map(t => t.id === id ? { ...t, ...updatedTournament } : t)
+    );
   }
 }

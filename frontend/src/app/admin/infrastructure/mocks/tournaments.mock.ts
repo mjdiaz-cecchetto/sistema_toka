@@ -13,7 +13,15 @@ export const TOURNAMENTS_MOCK: Tournament[] = [
     categoriesCount: 18,
     coverEmoji: '🥋',
     coverClass: 'cover-1',
-    logoEmoji: '🏆'
+    logoEmoji: '🏆',
+    organizerSchoolId: '1',
+    modalities: ['lucha_individual', 'tul_individual'],
+    maxCompetitors: 300,
+    maxSpectators: 1000,
+    numAreas: 4,
+    registrationDeadline: '2026-08-10',
+    excludedSchools: [],
+    excludedCategories: []
   },
   {
     id: '2',
@@ -27,6 +35,14 @@ export const TOURNAMENTS_MOCK: Tournament[] = [
     categoriesCount: 0,
     coverEmoji: '🎽',
     coverClass: 'cover-2',
-    logoEmoji: '🥇'
+    logoEmoji: '🥇',
+    organizerSchoolId: '2',
+    modalities: ['lucha_individual', 'tul_individual', 'lucha_equipos', 'tul_equipos'],
+    maxCompetitors: 150,
+    maxSpectators: 500,
+    numAreas: 2,
+    registrationDeadline: '2025-11-15',
+    excludedSchools: [],
+    excludedCategories: []
   }
 ];

@@ -1,4 +1,4 @@
-export type TournamentStatus = 'borrador' | 'inscripcion_abierta' | 'inscripcion_cerrada' | 'en_curso' | 'finalizado';
+export type TournamentStatus = 'borrador' | 'inscripcion_abierta' | 'inscripcion_cerrada' | 'en_curso' | 'finalizado' | 'suspendido' | 'cancelado';
 
 export interface Tournament {
   id: string;
@@ -18,4 +18,11 @@ export interface Tournament {
   maxCompetitors?: number;
   maxSpectators?: number;
   numAreas?: number;
+
+  organizerSchoolId?: string;
+  logo?: string;
+  modalities?: string[];
+  excludedSchools?: string[];
+  excludedCategories?: string[];
+  registrationDeadline?: string;
 }

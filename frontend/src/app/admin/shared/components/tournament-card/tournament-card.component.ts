@@ -24,7 +24,9 @@ export class TournamentCardComponent {
       inscripcion_abierta: '● Inscripción abierta',
       inscripcion_cerrada: '● Inscripción cerrada',
       en_curso: '● En curso',
-      finalizado: '● Finalizado'
+      finalizado: '● Finalizado',
+      suspendido: '● Suspendido',
+      cancelado: '● Cancelado'
     };
     return labels[status];
   }

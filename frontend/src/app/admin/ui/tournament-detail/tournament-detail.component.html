@@ -8,23 +8,38 @@
       <div class="banner-content">
         <div class="banner-left">
           <div class="banner-logo">
-            {{ tournament()!.logoEmoji }}
+            {{ editForm.get('logoEmoji')?.value || tournament()!.logoEmoji }}
           </div>
         </div>
         <div class="banner-info">
-          <h1 class="banner-title">{{ tournament()!.name }}</h1>
-          <p class="banner-sub">{{ tournament()!.description }}</p>
+          <h1 class="banner-title">{{ isNewTournament() ? 'Crear Nuevo Torneo' : tournament()!.name }}</h1>
+          <p class="banner-sub">{{ isNewTournament() ? 'Configurá los detalles básicos y parámetros para la nueva competencia.' : tournament()!.description }}</p>
           
-          <div class="banner-meta">
-            <div class="meta-item">
-              <svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
-              {{ tournament()!.date }}
+          @if (!isNewTournament()) {
+            <div class="banner-meta">
+              <div class="meta-item">
+                <svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+                {{ tournament()!.date }}
+              </div>
+              <div class="meta-item">
+                <svg viewBox="0 0 24 24"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+                {{ tournament()!.place }}
+              </div>
+              @if (tournament()!.registrationDeadline) {
+                <div class="meta-item deadline">
+                  <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+                  Límite Insc.: {{ tournament()!.registrationDeadline }}
+                </div>
+              }
             </div>
-            <div class="meta-item">
-              <svg viewBox="0 0 24 24"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
-              {{ tournament()!.place }}
+          } @else {
+            <div class="banner-meta">
+              <div class="meta-item deadline">
+                <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+                Estado inicial: Borrador
+              </div>
             </div>
-          </div>
+          }
         </div>
         
         <div class="banner-actions">
@@ -35,162 +50,310 @@
       </div>
     </div>
 
-    <!-- Management Modules -->
-    <div class="management-grid">
-      <!-- Módulo 1: Configuración General -->
-      <div class="section-card">
-        <div class="section-header">
-          <div class="header-icon purple">
-            <svg viewBox="0 0 24 24"><path d="M12 15a3 3 0 1 0 0-6 3 3 0 0 0 0 6Z"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1Z"/></svg>
-          </div>
-          Configuración General
-        </div>
-        <div class="section-body">
-          <div class="config-item">
-            <div class="config-label">Competidores Máximos</div>
-            <div class="config-value">
-              <input type="number" [(ngModel)]="generalConfig.maxCompetitors" class="form-input-sm">
-            </div>
-          </div>
-          <div class="config-item">
-            <div class="config-label">Espectadores Máximos</div>
-            <div class="config-value">
-              <input type="number" [(ngModel)]="generalConfig.maxSpectators" class="form-input-sm">
-            </div>
-          </div>
-          <div class="config-item">
-            <div class="config-label">Áreas de Combate</div>
-            <div class="config-value">
-              <select [(ngModel)]="generalConfig.numAreas" class="form-select-sm">
-                <option [value]="1">1 Área</option>
-                <option [value]="2">2 Áreas</option>
-                <option [value]="3">3 Áreas</option>
-                <option [value]="4">4 Áreas</option>
-                <option [value]="5">5 Áreas</option>
-              </select>
-            </div>
-          </div>
-          <button class="btn-save-config" (click)="saveGeneralConfig()">Guardar Parámetros</button>
-        </div>
-      </div>
+    <!-- Navigation Tabs -->
+    <div class="tabs-container">
+      <button class="tab-btn" [class.active]="activeTab() === 'general'" (click)="activeTab.set('general')">
+        <svg viewBox="0 0 24 24"><path d="M12 15a3 3 0 1 0 0-6 3 3 0 0 0 0 6Z"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1Z"/></svg>
+        Datos Generales
+      </button>
+      <button class="tab-btn" [class.active]="activeTab() === 'modalidades'" (click)="activeTab.set('modalidades')">
+        <svg viewBox="0 0 24 24"><polygon points="12 2 22 8.5 22 15.5 12 22 2 15.5 2 8.5 12 2"/></svg>
+        Modalidades & Restricciones
+      </button>
+      <button class="tab-btn" [class.active]="activeTab() === 'escuelas'" (click)="activeTab.set('escuelas')">
+        <svg viewBox="0 0 24 24"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/></svg>
+        Escuelas Participantes
+      </button>
+      <button class="tab-btn" [class.active]="activeTab() === 'categorias'" (click)="activeTab.set('categorias')">
+        <svg viewBox="0 0 24 24"><path d="M4 6h16M4 10h16M4 14h16M4 18h16"/></svg>
+        Categorías
+      </button>
+    </div>
 
-      <!-- Módulo 3: Gestión de Categorías -->
-      <div class="section-card categories-section">
-        <div class="section-header">
-          <div class="header-icon blue">
-            <svg viewBox="0 0 24 24"><path d="M4 6h16M4 10h16M4 14h16M4 18h16"/></svg>
+    <!-- Management Modules Content -->
+    <div class="tab-content">
+      
+      <!-- TAB 1: GENERAL CONFIGURATION -->
+      @if (activeTab() === 'general') {
+        <div class="section-card-flat">
+          <div class="card-header-accent">
+            <h3>Información General del Torneo</h3>
+            <p>Configurá el nombre, fechas, organizador y el estado actual de la competencia.</p>
           </div>
-          Gestión de Categorías
-          <button class="btn-add-mini" (click)="isCategoryModalOpen.set(true)">+ Nueva</button>
-        </div>
-        <div class="section-body" style="padding:0">
-          <table class="data-table">
-            <thead>
-              <tr>
-                <th>Categoría</th>
-                <th>Género / Peso</th>
-                <th>Cupos</th>
-                <th>Estado</th>
-                <th></th>
-              </tr>
-            </thead>
-            <tbody>
-              @for (cat of tournamentCategories(); track cat.key) {
-                <tr>
-                  <td>
-                    <div style="font-weight:600">{{ cat.nombre }}</div>
-                    <div style="font-size:11px; color:var(--text-muted)">{{ cat.edad }}</div>
-                  </td>
-                  <td>{{ cat.genero }} · {{ cat.peso }}</td>
-                  <td>
-                    <div class="cupo-indicator">
-                      <div class="cupo-bar">
-                        <div class="cupo-fill" [style.width.%]="(cat.competitors.length / cat.maxCompetidores) * 100"></div>
-                      </div>
-                      <span class="cupo-text">{{ cat.competitors.length }} / {{ cat.maxCompetidores }}</span>
-                    </div>
-                  </td>
-                  <td>
-                    <span class="status-dot" [class]="cat.status"></span>
-                    {{ cat.status | titlecase }}
-                  </td>
-                  <td>
-                    <button class="btn-icon-sm"><svg viewBox="0 0 24 24"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"/></svg></button>
-                  </td>
-                </tr>
-              }
-            </tbody>
-          </table>
-        </div>
-      </div>
+          <form [formGroup]="editForm" (ngSubmit)="saveAllChanges()" class="form-layout">
+            <div class="form-grid-three">
+              <div class="form-group-custom">
+                <label>Nombre del Torneo</label>
+                <input formControlName="name" class="form-input-premium" placeholder="Ej: Torneo Nacional G1">
+              </div>
+              <div class="form-group-custom">
+                <label>Fecha</label>
+                <input type="date" formControlName="date" class="form-input-premium">
+              </div>
+              <div class="form-group-custom">
+                <label>Sede / Lugar</label>
+                <input formControlName="place" class="form-input-premium" placeholder="Ej: Estadio Polideportivo">
+              </div>
+            </div>
 
-      <!-- Módulo 4: Inscripción de Competidores -->
-      <div class="section-card full-row">
-        <div class="section-header">
-          <div class="header-icon green">
-            <svg viewBox="0 0 24 24"><path d="M16 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><line x1="19" y1="8" x2="19" y2="14"/><line x1="16" y1="11" x2="22" y2="11"/></svg>
-          </div>
-          Inscripción de Competidores
-        </div>
-        <div class="section-body">
-          <form [formGroup]="regForm" (ngSubmit)="onRegister()">
-            <div class="registration-form-grid">
-              <div class="form-group">
-                <label class="form-label">Nombre y Apellido</label>
-                <input class="form-input" formControlName="nombre" placeholder="Nombre completo">
+            <div class="form-grid-three">
+              <div class="form-group-custom">
+                <label>Organizador (Texto descriptivo)</label>
+                <input formControlName="organizer" class="form-input-premium" placeholder="Ej: Asociación Provincial">
               </div>
-              <div class="form-group">
-                <label class="form-label">DNI</label>
-                <input class="form-input" formControlName="dni" placeholder="Nro de documento">
-              </div>
-              <div class="form-group">
-                <label class="form-label">Categoría</label>
-                <select class="form-select" formControlName="catKey">
-                  <option value="">Seleccionar categoría...</option>
-                  @for (cat of tournamentCategories(); track cat.key) {
-                    <option [value]="cat.key" [disabled]="cat.competitors.length >= cat.maxCompetidores">
-                      {{ cat.nombre }} ({{ cat.competitors.length }}/{{ cat.maxCompetidores }})
-                    </option>
+              <div class="form-group-custom">
+                <label>Escuela Organizadora</label>
+                <select formControlName="organizerSchoolId" class="form-select-premium">
+                  <option value="">Seleccionar escuela...</option>
+                  @for (school of schools(); track school.id) {
+                    <option [value]="school.id">{{ school.nombre }} ({{ school.sigla }})</option>
                   }
                 </select>
               </div>
-              <div class="form-group">
-                <label class="form-label">Club / Academia</label>
-                <input class="form-input" formControlName="club" placeholder="Nombre del club">
-              </div>
-              <div class="form-group">
-                <label class="form-label">Graduación / Cinturón</label>
-                <select class="form-select" formControlName="grado">
-                  <option value="">Seleccionar graduación...</option>
-                  <optgroup label="GUP (Cinturones de Color)">
-                    @for (g of masterData.getGraduations('GUP'); track g.value) {
-                      <option [value]="g.label">{{ g.label }}</option>
-                    }
-                  </optgroup>
-                  <optgroup label="DAN (Cinturones Negros)">
-                    @for (g of masterData.getGraduations('DAN'); track g.value) {
-                      <option [value]="g.label">{{ g.label }}</option>
-                    }
-                  </optgroup>
-                </select>
-              </div>
-              <div class="form-group">
-                <label class="form-label">Email</label>
-                <input class="form-input" type="email" formControlName="email">
-              </div>
-              <div class="form-group">
-                <label class="form-label">Teléfono</label>
-                <input class="form-input" formControlName="telefono">
+              <div class="form-group-custom text-center">
+                <label>Logo / Icono (Emoji)</label>
+                <div class="emoji-selector-wrapper">
+                  <select formControlName="logoEmoji" class="form-select-premium emoji-select">
+                    <option value="🏆">🏆 Copa</option>
+                    <option value="🥇">🥇 Medalla de Oro</option>
+                    <option value="🥋">🥋 Cinturón / Dobok</option>
+                    <option value="⚡">⚡ Rayo</option>
+                    <option value="⭐">⭐ Estrella</option>
+                    <option value="💥">💥 Impacto</option>
+                    <option value="🎖️">🎖️ Medalla Militar</option>
+                    <option value="🏅">🏅 Medalla de Honor</option>
+                  </select>
+                </div>
               </div>
             </div>
-            <div class="form-actions">
-              <button type="submit" class="btn-primary" [disabled]="regForm.invalid">
-                Registrar Competidor
+
+            <div class="form-grid-two">
+              <div class="form-group-custom">
+                <label>Estado del Torneo</label>
+                <select formControlName="status" class="form-select-premium status-select" [class]="editForm.get('status')?.value" [disabled]="isNewTournament()">
+                  <option value="borrador">🟢 Borrador</option>
+                  <option value="inscripcion_abierta">🟢 Inscripción Abierta</option>
+                  <option value="inscripcion_cerrada">🟡 Inscripción Cerrada</option>
+                  <option value="en_curso">🔵 En Curso</option>
+                  <option value="finalizado">🟣 Finalizado</option>
+                  <option value="suspendido">🔴 Suspendido</option>
+                  <option value="cancelado">⚫ Cancelado</option>
+                </select>
+              </div>
+              <div class="form-group-custom">
+                <label>Descripción / Detalles</label>
+                <textarea formControlName="description" class="form-textarea-premium" rows="2" placeholder="Detalles de la competencia..."></textarea>
+              </div>
+            </div>
+
+            <div class="form-actions-premium">
+              <button type="submit" class="btn-primary-premium" [disabled]="editForm.invalid">
+                {{ isNewTournament() ? 'Crear Torneo y Continuar' : 'Guardar Cambios General' }}
               </button>
             </div>
           </form>
         </div>
-      </div>
+      }
+
+      <!-- TAB 2: MODALITIES & RESTRICTIONS -->
+      @if (activeTab() === 'modalidades') {
+        <div class="tab-grid-split">
+          <!-- Modalities -->
+          <div class="section-card-flat">
+            <div class="card-header-accent">
+              <h3>Modalidades Habilitadas</h3>
+              <p>Habilitá o deshabilitá las modalidades permitidas en esta competencia.</p>
+            </div>
+            
+            <div class="modalities-cards-grid">
+              @for (mod of availableModalities; track mod.key) {
+                <div class="modality-card" 
+                     [class.active]="selectedModalities().includes(mod.key)" 
+                     (click)="toggleModality(mod.key)">
+                  <div class="modality-icon">
+                    @if (mod.key.includes('lucha')) {
+                      🥊
+                    } @else {
+                      📜
+                    }
+                  </div>
+                  <div class="modality-info">
+                    <h4>{{ mod.label }}</h4>
+                    <p>{{ mod.key.includes('equipos') ? 'Competencia grupal por escuelas' : 'Competencia individual por categorías' }}</p>
+                  </div>
+                  <div class="modality-checkbox">
+                    <div class="checkbox-ui" [class.checked]="selectedModalities().includes(mod.key)"></div>
+                  </div>
+                </div>
+              }
+            </div>
+          </div>
+
+          <!-- Restrictions -->
+          <div class="section-card-flat">
+            <div class="card-header-accent">
+              <h3>Restricciones y Cupos</h3>
+              <p>Configurá los límites de aforo y fechas límites del torneo.</p>
+            </div>
+            
+            <form [formGroup]="editForm" (ngSubmit)="saveAllChanges()" class="form-layout">
+              <div class="form-group-custom">
+                <label>Cantidad máxima de competidores</label>
+                <input type="number" formControlName="maxCompetitors" class="form-input-premium">
+              </div>
+              
+              <div class="form-group-custom">
+                <label>Cantidad máxima de espectadores</label>
+                <input type="number" formControlName="maxSpectators" class="form-input-premium">
+              </div>
+
+              <div class="form-group-custom">
+                <label>Fecha límite de inscripción</label>
+                <input type="date" formControlName="registrationDeadline" class="form-input-premium">
+              </div>
+
+              <div class="form-group-custom">
+                <label>Áreas de Combate</label>
+                <select formControlName="numAreas" class="form-select-premium">
+                  <option [value]="1">1 Área</option>
+                  <option [value]="2">2 Áreas</option>
+                  <option [value]="3">3 Áreas</option>
+                  <option [value]="4">4 Áreas</option>
+                  <option [value]="5">5 Áreas</option>
+                  <option [value]="6">6 Áreas</option>
+                </select>
+              </div>
+
+              <div class="form-actions-premium" style="margin-top:20px;">
+                <button type="submit" class="btn-primary-premium" [disabled]="editForm.invalid">
+                  {{ isNewTournament() ? 'Crear Torneo y Continuar' : 'Guardar Restricciones' }}
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      }
+
+      <!-- TAB 3: PARTICIPATING SCHOOLS -->
+      @if (activeTab() === 'escuelas') {
+        <div class="section-card-flat">
+          <div class="card-header-accent flex-header">
+            <div>
+              <h3>Escuelas Participantes</h3>
+              <p>Por defecto participan todas las escuelas. Podés excluir escuelas específicas para este torneo.</p>
+            </div>
+            <div class="schools-summary">
+              Participando: <strong>{{ schools().length - excludedSchools().length }}</strong> / Excluidas: <strong>{{ excludedSchools().length }}</strong>
+            </div>
+          </div>
+
+          <div class="schools-horizontal-list">
+            @for (school of schools(); track school.id) {
+              @let isExcluded = excludedSchools().includes(school.id);
+              <div class="school-premium-card" [class.excluded]="isExcluded">
+                <div class="school-card-body">
+                  <span class="school-badge" [class.excluded]="isExcluded">
+                    {{ isExcluded ? 'Excluida' : 'Participa' }}
+                  </span>
+                  <div class="school-logo-emoji">
+                    🏫
+                  </div>
+                  <h4 class="school-name">{{ school.nombre }}</h4>
+                  <p class="school-sigla">{{ school.sigla || 'SIN SIGLA' }}</p>
+                  <p class="school-location">{{ school.ubicacion.ciudad }}, {{ school.ubicacion.provincia }}</p>
+                </div>
+                <div class="school-card-footer">
+                  <button class="btn-school-toggle" 
+                          [class.excluded]="isExcluded"
+                          (click)="toggleSchoolExclusion(school.id)">
+                    {{ isExcluded ? 'Permitir Participación' : 'Excluir Escuela' }}
+                  </button>
+                </div>
+              </div>
+            }
+          </div>
+
+          @if (isNewTournament()) {
+            <div class="form-actions-premium" style="margin-top:20px;">
+              <button (click)="saveAllChanges()" class="btn-primary-premium" [disabled]="editForm.invalid">
+                Crear Torneo y Continuar
+              </button>
+            </div>
+          }
+        </div>
+      }
+
+      <!-- TAB 4: CATEGORIES MANAGEMENT -->
+      @if (activeTab() === 'categorias') {
+        <div class="section-card-flat">
+          <div class="card-header-accent flex-header">
+            <div>
+              <h3>Categorías y Habilitaciones</h3>
+              <p>Excluí categorías específicas que no correspondan a este torneo o agregá categorías personalizadas.</p>
+            </div>
+            <div class="header-actions">
+              <button class="btn-primary-premium mini" (click)="isCategoryModalOpen.set(true)">+ Nueva Categoría</button>
+            </div>
+          </div>
+
+          <div class="table-container-premium">
+            <table class="data-table-premium">
+              <thead>
+                <tr>
+                  <th>Categoría</th>
+                  <th>Género / Peso</th>
+                  <th>Cupos Registrados</th>
+                  <th>Habilitación</th>
+                  <th>Acción</th>
+                </tr>
+              </thead>
+              <tbody>
+                @for (cat of tournamentCategories(); track cat.key) {
+                  @let isCatExcluded = excludedCategories().includes(cat.key);
+                  <tr [class.row-excluded]="isCatExcluded">
+                    <td>
+                      <div class="cat-title">{{ cat.nombre }}</div>
+                      <div class="cat-sub">{{ cat.edad }}</div>
+                    </td>
+                    <td>
+                      <span class="pill-gender">{{ cat.genero }}</span> · <span class="pill-weight">{{ cat.peso }}</span>
+                    </td>
+                    <td>
+                      <div class="cupo-indicator-premium">
+                        <div class="cupo-bar-premium">
+                          <div class="cupo-fill-premium" [style.width.%]="(cat.competitors.length / cat.maxCompetidores) * 100"></div>
+                        </div>
+                        <span class="cupo-text-premium">{{ cat.competitors.length }} / {{ cat.maxCompetidores }} competidores</span>
+                      </div>
+                    </td>
+                    <td>
+                      <span class="status-indicator-badge" [class.excluded]="isCatExcluded">
+                        {{ isCatExcluded ? '❌ Excluida' : '✅ Habilitada' }}
+                      </span>
+                    </td>
+                    <td>
+                      <button class="btn-table-toggle"
+                              [class.excluded]="isCatExcluded"
+                              (click)="toggleCategoryExclusion(cat.key)">
+                        {{ isCatExcluded ? 'Habilitar' : 'Excluir' }}
+                      </button>
+                    </td>
+                  </tr>
+                }
+              </tbody>
+            </table>
+          </div>
+
+          <div class="form-actions-premium" style="margin-top:20px;">
+            @if (isNewTournament()) {
+              <button (click)="saveAllChanges()" class="btn-primary-premium" [disabled]="editForm.invalid">
+                Crear Torneo y Guardar
+              </button>
+            }
+          </div>
+        </div>
+      }
+
     </div>
   </div>
 }
