@@ -1,0 +1,177 @@
+@if (tournament()) {
+  <div class="view active">
+    <!-- Header with Back Button -->
+    <div class="header-actions-bar">
+      <button class="btn-back" (click)="goBack()">
+        <svg viewBox="0 0 24 24"><path d="M15 18l-6-6 6-6"/></svg>
+        Volver
+      </button>
+    </div>
+
+    <!-- Banner Header -->
+    <div class="banner-header">
+      <div class="banner-cover" [class]="tournament()!.coverClass">
+        <div class="cover-overlay"></div>
+      </div>
+      <div class="banner-content">
+        <div class="banner-left">
+          <div class="banner-logo">
+            {{ tournament()!.logoEmoji }}
+          </div>
+        </div>
+        <div class="banner-info">
+          <h1 class="banner-title">{{ tournament()!.name }}</h1>
+          <p class="banner-sub">{{ tournament()!.description }}</p>
+          
+          <div class="banner-meta">
+            <div class="meta-item">
+              <svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+              {{ tournament()!.date }}
+            </div>
+            <div class="meta-item">
+              <svg viewBox="0 0 24 24"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+              {{ tournament()!.place }}
+            </div>
+          </div>
+        </div>
+        
+        <div class="banner-actions">
+           <div class="status-badge" [class]="tournament()!.status">
+             {{ getStatusLabel(tournament()!.status) }}
+           </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="grid-layout">
+      <!-- Inscription Form -->
+      <div class="section-card-flat form-section">
+        <div class="card-header-accent">
+          <h3>Inscribir Competidor</h3>
+          <p>Completá el formulario para registrar un competidor en este torneo.</p>
+        </div>
+
+        <form [formGroup]="inscriptionForm" (ngSubmit)="onSubmit()" class="form-layout">
+          <div class="form-grid-two">
+            <div class="form-group-custom">
+              <label>Nombre y Apellido</label>
+              <input formControlName="nombre" class="form-input-premium" placeholder="Ej: Juan Pérez">
+            </div>
+            <div class="form-group-custom">
+              <label>DNI</label>
+              <input formControlName="dni" class="form-input-premium" placeholder="Ej: 12345678">
+            </div>
+          </div>
+
+          <div class="form-grid-three">
+            <div class="form-group-custom">
+              <label>Fecha Nacimiento</label>
+              <input type="date" formControlName="fechaNacimiento" class="form-input-premium">
+            </div>
+            <div class="form-group-custom">
+              <label>Edad (Categoría)</label>
+              <select formControlName="edad" class="form-select-premium">
+                <option value="Infantil">Infantil</option>
+                <option value="Cadete">Cadete</option>
+                <option value="Juvenil">Juvenil</option>
+                <option value="Senior">Senior</option>
+                <option value="Master">Master</option>
+              </select>
+            </div>
+            <div class="form-group-custom">
+              <label>Género</label>
+              <select formControlName="genero" class="form-select-premium">
+                <option value="Masculino">Masculino</option>
+                <option value="Femenino">Femenino</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="form-grid-three">
+            <div class="form-group-custom">
+              <label>Peso</label>
+              <input formControlName="peso" class="form-input-premium" placeholder="Ej: -63kg">
+            </div>
+            <div class="form-group-custom">
+              <label>Grado / Cinturón</label>
+              <select formControlName="grado" class="form-select-premium">
+                <option value="Blanco">Blanco</option>
+                <option value="Amarillo">Amarillo</option>
+                <option value="Verde">Verde</option>
+                <option value="Azul">Azul</option>
+                <option value="Rojo">Rojo</option>
+                <option value="Negro">Negro</option>
+              </select>
+            </div>
+            <div class="form-group-custom">
+              <label>Escuela / Club</label>
+              <select formControlName="club" class="form-select-premium">
+                <option value="">Seleccionar...</option>
+                @for (school of schools(); track school.id) {
+                  <option [value]="school.nombre">{{ school.nombre }}</option>
+                }
+              </select>
+            </div>
+          </div>
+
+          <div class="form-actions-premium">
+            <button type="submit" class="btn-primary-premium" [disabled]="inscriptionForm.invalid">
+              Registrar Competidor
+            </button>
+          </div>
+        </form>
+      </div>
+
+      <!-- Inscribed List -->
+      <div class="section-card-flat list-section">
+        <div class="card-header-accent flex-header">
+          <div>
+            <h3>Competidores Inscriptos</h3>
+            <p>Lista de competidores registrados en este torneo para esta escuela.</p>
+          </div>
+          <div class="schools-summary">
+            Total: <strong>{{ sessionCompetitors().length }}</strong>
+          </div>
+        </div>
+
+        <div class="table-container-premium">
+          <table class="data-table-premium">
+            <thead>
+              <tr>
+                <th>Competidor</th>
+                <th>Escuela</th>
+                <th>Categoría</th>
+                <th>Grado</th>
+              </tr>
+            </thead>
+            <tbody>
+              @for (comp of sessionCompetitors(); track comp.dni) {
+                <tr>
+                  <td>
+                    <div class="cat-title">{{ comp.nombre }}</div>
+                    <div class="cat-sub">DNI: {{ comp.dni }}</div>
+                  </td>
+                  <td>{{ comp.club }}</td>
+                  <td>
+                    <span class="pill-gender">{{ comp.genero }}</span> · <span class="pill-weight">{{ comp.edad }} {{ comp.peso }}</span>
+                  </td>
+                  <td>
+                    <span class="pill-grade">{{ comp.grado }}</span>
+                  </td>
+                </tr>
+              }
+              @if (sessionCompetitors().length === 0) {
+                <tr>
+                  <td colspan="4" style="text-align: center; color: var(--text-muted); padding: 30px;">
+                    No hay competidores inscriptos en esta sesión aún.
+                  </td>
+                </tr>
+              }
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+}
+

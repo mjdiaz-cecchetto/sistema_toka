@@ -18,6 +18,10 @@ export class TournamentCardComponent {
     this.router.navigate(['/torneo', this.tournament().id]);
   }
 
+  onInscribir() {
+    this.router.navigate(['/torneo', this.tournament().id, 'inscribir']);
+  }
+
   getStatusLabel(status: TournamentStatus): string {
     const labels: Record<TournamentStatus, string> = {
       borrador: '● Borrador',

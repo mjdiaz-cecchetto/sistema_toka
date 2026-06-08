@@ -43,5 +43,19 @@
 }
 
 .btn-manage:hover { background: var(--accent-h); }
+.btn-inscribir { 
+  flex: 1.2; 
+  padding: 10px; 
+  border-radius: 8px; 
+  background: #10b981; 
+  color: white; 
+  border: none; 
+  font-size: 12.5px; 
+  font-weight: 600; 
+  cursor: pointer; 
+  transition: background .15s; 
+  font-family: inherit; 
+}
+.btn-inscribir:hover { background: #059669; }
 .btn-preview { flex: 1; padding: 10px; border-radius: 8px; background: white; color: var(--text-secondary); border: 1px solid var(--border); font-size: 12.5px; font-weight: 600; cursor: pointer; transition: background .15s; font-family: inherit; }
 .btn-preview:hover { background: var(--main-bg); color: var(--text-primary); }
