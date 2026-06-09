@@ -1,104 +1,88 @@
 @if (tournament()) {
-  <div class="view active">
-    <!-- Header with Back Button -->
-    <div class="header-actions-bar">
-      <button class="btn-back" (click)="goBack()">
-        <svg viewBox="0 0 24 24"><path d="M15 18l-6-6 6-6"/></svg>
-        Volver
-      </button>
-    </div>
-
-    <!-- Tournament Header -->
-    <div class="tournament-header">
-      <div class="header-main-info">
-        <h1 class="tournament-title">{{ tournament()!.name }}</h1>
+  <div class="view active compact-view-container">
+    <!-- Consolidated Medium-Sized Header Banner (All info grouped together) -->
+    <div class="tournament-header-premium">
+      <div class="header-main-info-premium">
+        <div class="title-row-premium">
+          <button class="btn-back-premium" (click)="goBack()" title="Volver">
+            <svg viewBox="0 0 24 24"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
+          </button>
+          <h1 class="tournament-title-premium">{{ tournament()!.name }}</h1>
+        </div>
         @if (tournament()!.description) {
-          <p class="tournament-subtitle">{{ tournament()!.description }}</p>
+          <p class="tournament-subtitle-premium">{{ tournament()!.description }}</p>
         }
         
-        <div class="tournament-meta-list">
-          <div class="meta-item">
-            <svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
-            {{ tournament()!.date }}
+        <!-- Grouped Metadata Panel -->
+        <div class="metadata-group-premium">
+          <div class="metadata-item-premium">
+            <span class="meta-label-premium">📅 Fecha:</span>
+            <span class="meta-val-premium">{{ tournament()!.date }}</span>
           </div>
-          <div class="meta-item">
-            <svg viewBox="0 0 24 24"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
-            {{ tournament()!.place }}
+          <div class="metadata-item-premium">
+            <span class="meta-label-premium">📍 Lugar:</span>
+            <span class="meta-val-premium">{{ tournament()!.place }}</span>
           </div>
-          <span class="status-badge" [class]="tournament()!.status">
+          <div class="metadata-item-premium">
+            <span class="meta-label-premium">👥 Inscriptos:</span>
+            <span class="meta-val-premium"><strong>{{ competitors().length }}</strong></span>
+          </div>
+          <div class="metadata-item-premium">
+            <span class="meta-label-premium">🥋 Categorías:</span>
+            <span class="meta-val-premium"><strong>2</strong></span>
+          </div>
+          <span class="status-badge-premium" [class]="tournament()!.status">
             {{ getStatusLabel(tournament()!.status) }}
           </span>
         </div>
       </div>
     </div>
 
-    <!-- Summary Metrics Section -->
-    <div class="section-card-flat summary-section-bar">
-      <div class="summary-metric">
-        <span class="metric-icon">👥</span>
-        <div class="metric-info">
-          <span class="metric-label">Competidores Inscriptos</span>
-          <span class="metric-value">{{ competitors().length }}</span>
-        </div>
-      </div>
-      <div class="summary-metric">
-        <span class="metric-icon">🥋</span>
-        <div class="metric-info">
-          <span class="metric-label">Categorías Habilitadas</span>
-          <span class="metric-value">2</span>
-        </div>
-      </div>
-    </div>
-
-    <!-- Search Section (Full Width) -->
-    <div class="section-card-flat search-section-full">
-      <div class="search-input-container-light">
-        <svg class="search-icon-light" viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
-        <input 
-          type="text" 
-          class="search-input-light" 
-          placeholder="Buscar competidor por nombre o club..." 
-          [ngModel]="searchQuery()"
-          (ngModelChange)="searchQuery.set($event)"
-        >
-      </div>
-      <span class="results-badge-light">
-        {{ filteredCompetitors().length }} competidores
-      </span>
-    </div>
-
-    <!-- Two-column grid layout below search -->
-    <div class="grid-layout">
-      <!-- Left Column: Competitors List -->
-      <div class="section-card-flat list-section">
-        <div class="card-header-accent">
-          <h3>Listado de Competidores</h3>
-          <p>Seleccioná un competidor de la lista para gestionar su pesaje.</p>
+    <!-- Two-column grid layout -->
+    <div class="grid-layout-compact">
+      <!-- Left Column: Search Bar and Competitors List -->
+      <div class="section-card-flat-compact list-section-compact">
+        <!-- Search bar directly inside the list column -->
+        <div class="search-box-compact">
+          <div class="search-input-wrapper-compact">
+            <svg class="search-icon-compact" viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+            <input 
+              type="text" 
+              class="search-input-compact" 
+              placeholder="Buscar por nombre, club o DNI..." 
+              [ngModel]="searchQuery()"
+              (ngModelChange)="searchQuery.set($event)"
+            >
+          </div>
+          <span class="results-count-compact">
+            {{ filteredCompetitors().length }}
+          </span>
         </div>
 
-        <div class="competitors-light-list">
+        <!-- Scrollable competitors list -->
+        <div class="competitors-scroller-compact">
           @for (comp of filteredCompetitors(); track comp.id) {
             <div 
-              class="competitor-light-card" 
+              class="competitor-card-compact" 
               [class.active]="selectedCompetitor()?.id === comp.id"
               (click)="selectCompetitor(comp)"
             >
-              <div class="comp-avatar-light" [class]="'avatar-color-' + (comp.id % 5)">
+              <div class="comp-avatar-compact" [class]="'avatar-color-' + (comp.id % 5)">
                 {{ comp.nombre.substring(0, 1) }}
               </div>
-              <div class="comp-info-light">
-                <h4 class="comp-name-light">{{ comp.nombre }}</h4>
-                <p class="comp-subinfo-light">{{ comp.club }} · {{ comp.edad }}</p>
+              <div class="comp-info-compact">
+                <h4 class="comp-name-compact">{{ comp.nombre }}</h4>
+                <p class="comp-sub-compact">{{ comp.club }} · DNI: {{ comp.dni }} · {{ comp.edad }}</p>
               </div>
-              <div class="comp-status-light">
+              <div class="comp-status-compact">
                 @if (comp.isWeighedIn) {
-                  <span class="status-pill-light success">
-                    <svg class="check-icon" viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>
+                  <span class="status-pill-compact success">
+                    <svg class="check-icon-compact" viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>
                     {{ comp.pesoRegistrado }} kg &rarr; {{ comp.categoriaConfirmada }}
                   </span>
                 } @else {
-                  <span class="status-pill-light pending">
-                    <svg class="clock-icon" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+                  <span class="status-pill-compact pending">
+                    <svg class="clock-icon-compact" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
                     {{ comp.categoriaInscripta }}
                   </span>
                 }
@@ -106,7 +90,7 @@
             </div>
           }
           @if (filteredCompetitors().length === 0) {
-            <div class="no-results-light">
+            <div class="no-results-compact">
               No se encontraron competidores coincidentes.
             </div>
           }
@@ -114,135 +98,121 @@
       </div>
 
       <!-- Right Column: Weigh-in Form -->
-      <div class="section-card-flat weigh-form-section">
+      <div class="section-card-flat-compact weigh-form-section-compact">
         @if (selectedCompetitor()) {
           @let comp = selectedCompetitor()!;
           @let info = confirmedCategoryInfo()!;
 
-          <div class="card-header-accent">
-            <h3>Registro de Pesaje Oficial</h3>
-            <p>Registrá el peso actual y confirmá la categoría del atleta.</p>
-          </div>
-
-          <div class="weigh-in-form-light">
-            <!-- Selected Competitor Profile Header -->
-            <div class="weigh-comp-identity">
-              <div class="comp-avatar-light large" [class]="'avatar-color-' + (comp.id % 5)">
+          <div class="weigh-in-form-compact">
+            <!-- Selected Competitor Profile Summary -->
+            <div class="comp-profile-compact">
+              <div class="comp-avatar-compact large" [class]="'avatar-color-' + (comp.id % 5)">
                 {{ comp.nombre.substring(0, 1) }}
               </div>
-              <div class="comp-identity-details">
-                <h4>{{ comp.nombre }}</h4>
-                <p class="comp-subtext">{{ comp.club }} · {{ comp.edad }}</p>
-                <div class="comp-meta-badges">
-                  <span class="meta-pill-dark">DNI: {{ comp.dni }}</span>
-                  <span class="meta-pill-dark">Cinturón: {{ comp.grado }}</span>
+              <div class="comp-profile-details">
+                <h3>{{ comp.nombre }}</h3>
+                <p>{{ comp.club }} · {{ comp.edad }}</p>
+                <div class="comp-meta-pills-compact">
+                  <span>DNI: {{ comp.dni }}</span>
+                  <span>Cinturón: {{ comp.grado }}</span>
                 </div>
               </div>
             </div>
 
-            <!-- Weight input field ("Balanza Digital") -->
-            <div class="weight-input-section-light">
-              <div class="label-header-row">
-                <span class="form-label-premium">Balanza Oficial</span>
-                <span class="inscribed-category-hint">Categoría inscripta: <strong>{{ comp.categoriaInscripta }}</strong></span>
+            <!-- Weigh-in Box -->
+            <div class="scale-section-compact">
+              <div class="scale-header-compact">
+                <span class="scale-title">Balanza Oficial</span>
+                <span class="category-inscribed-badge">
+                  Inscripto: <strong>{{ comp.categoriaInscripta }}</strong>
+                </span>
               </div>
-              <div class="digital-scale-box">
-                <div class="input-weight-wrapper-light">
-                  <input 
-                    type="number" 
-                    step="0.1" 
-                    min="0"
-                    class="weight-num-input" 
-                    placeholder="0.0"
-                    [ngModel]="weightInput()"
-                    (ngModelChange)="weightInput.set($event)"
-                  >
-                  <span class="weight-unit-label">kg</span>
-                </div>
-                <div class="scale-footer-hint">
-                  <span class="hint-bullet"></span>
-                  Ingresá el peso que marca la balanza física
-                </div>
+
+              <!-- Input Weight box -->
+              <div class="digital-scale-input-box">
+                <input 
+                  type="number" 
+                  step="0.1" 
+                  min="0"
+                  class="weight-value-input" 
+                  placeholder="0.0"
+                  [ngModel]="weightInput()"
+                  (ngModelChange)="weightInput.set($event)"
+                >
+                <span class="scale-unit">kg</span>
               </div>
             </div>
 
-            <!-- Weight progress slider/bar -->
+            <!-- Progress bar and alerts -->
             @if (weightInput() !== null && weightInput() !== undefined && weightInput()! > 0) {
-              <div class="weight-slider-section-light">
-                <div class="slider-limits-light">
-                  <span class="limit-tag min">0 kg</span>
-                  <span class="limit-tag max">Límite: {{ info.limit }} kg</span>
+              <!-- Slider/Limits Bar -->
+              <div class="slider-wrapper-compact">
+                <div class="slider-labels-compact">
+                  <span>0 kg</span>
+                  <span>{{ info.limit }} kg</span>
                 </div>
-                <div class="progress-bar-light">
+                <div class="slider-bar-compact">
                   <div 
-                    class="progress-fill-light" 
+                    class="slider-fill-compact" 
                     [style.width.%]="(weightInput()! / info.limit) * 100 > 100 ? 100 : (weightInput()! / info.limit) * 100"
                     [class.over]="weightInput()! > info.limit"
                   ></div>
                 </div>
               </div>
 
-              <!-- Alert confirmation box -->
-              <div class="status-alert-box-light" [class.success]="info.isWithinLimit" [class.warning]="!info.isWithinLimit">
-                <div class="alert-icon-wrapper-light">
+              <!-- Alert Panel -->
+              <div class="alert-panel-compact" [class.success]="info.isWithinLimit" [class.warning]="!info.isWithinLimit">
+                <span class="alert-icon-compact">
                   @if (info.isWithinLimit) {
-                    <div class="icon-circle success-circle">
-                      <svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>
-                    </div>
+                    ✓
                   } @else {
-                    <div class="icon-circle warning-circle">
-                      <svg viewBox="0 0 24 24"><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
-                    </div>
+                    ⚠️
                   }
-                </div>
-                <div class="alert-text-light">
+                </span>
+                <div class="alert-content-compact">
                   <h4>Categoría confirmada: {{ info.label }}</h4>
-                  <p class="alert-desc">
+                  <p>
                     <strong>{{ weightInput()! | number:'1.1-1' }} kg</strong> &mdash; 
-                    {{ info.isWithinLimit ? 'dentro del límite de ' + info.limit + ' kg.' : 'excede el límite original de ' + comp.categoriaInscripta + '.' }}
+                    {{ info.isWithinLimit ? 'dentro de la tolerancia.' : 'excede el límite inscripto.' }}
                   </p>
                 </div>
               </div>
 
-              <!-- Category change comparator flow diagram -->
-              <div class="category-transition-flow">
-                <div class="flow-header">Cambio de Categoría</div>
-                <div class="flow-container">
-                  <div class="flow-node original-node">
-                    <span class="node-label">Inscripto</span>
-                    <span class="node-val">{{ comp.categoriaInscripta }}</span>
+              <!-- Category Transition flowchart -->
+              <div class="flowchart-compact">
+                <span class="flowchart-title">Ajuste de Categoría</span>
+                <div class="flowchart-flow">
+                  <div class="flowchart-node">
+                    <span class="node-hdr">Inscripto</span>
+                    <span class="node-txt">{{ comp.categoriaInscripta }}</span>
                   </div>
-                  <div class="flow-connector" [class.changed]="comp.categoriaInscripta !== info.label">
-                    <svg class="connector-arrow" viewBox="0 0 24 24"><polyline points="12 5 19 12 12 19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
-                  </div>
-                  <div class="flow-node target-node" [class.changed]="comp.categoriaInscripta !== info.label">
-                    <span class="node-label">Pesaje Confirmado</span>
-                    <span class="node-val">{{ info.label }}</span>
+                  <svg class="flowchart-arrow" [class.active]="comp.categoriaInscripta !== info.label" viewBox="0 0 24 24"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+                  <div class="flowchart-node target" [class.changed]="comp.categoriaInscripta !== info.label">
+                    <span class="node-hdr">Confirmado</span>
+                    <span class="node-txt">{{ info.label }}</span>
                   </div>
                 </div>
               </div>
             } @else {
-              <div class="empty-weight-placeholder-light">
-                <div class="scale-emoji">⚖️</div>
-                <p>Ingresá el peso medido para realizar la validación de categoría en tiempo real</p>
+              <div class="placeholder-weigh-compact">
+                ⚖️ Ingresá el peso para validar categoría
               </div>
             }
 
-            <!-- Confirm weight button -->
+            <!-- Action Button -->
             <button 
-              class="btn-confirm-weigh-premium" 
+              class="btn-confirm-weigh-compact" 
               [disabled]="weightInput() === null || weightInput() === undefined || weightInput()! <= 0"
               (click)="confirmWeighIn()"
             >
-              <svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>
-              Confirmar pesaje
+              Confirmar pesaje oficial
             </button>
           </div>
         } @else {
-          <div class="select-competitor-fallback-light">
-            <div class="fallback-icon-light">👤</div>
-            <h3>Ningún competidor seleccionado</h3>
-            <p>Seleccioná un competidor del listado de la izquierda para registrar su peso y confirmar su pesaje oficial.</p>
+          <div class="fallback-select-compact">
+            <span class="fallback-emoji">👤</span>
+            <h3>Competidor no seleccionado</h3>
+            <p>Elegí un atleta del listado de la izquierda para registrar su peso oficial de combate.</p>
           </div>
         }
       </div>

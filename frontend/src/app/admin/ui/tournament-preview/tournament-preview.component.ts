@@ -142,7 +142,8 @@ export class TournamentPreviewComponent {
     const query = this.searchQuery().toLowerCase().trim();
     return this.competitors().filter(c => 
       c.nombre.toLowerCase().includes(query) || 
-      c.club.toLowerCase().includes(query)
+      c.club.toLowerCase().includes(query) ||
+      c.dni.includes(query)
     );
   });
 
