@@ -22,6 +22,10 @@ export class TournamentCardComponent {
     this.router.navigate(['/torneo', this.tournament().id, 'inscribir']);
   }
 
+  onPreview() {
+    this.router.navigate(['/torneo', this.tournament().id, 'vista-previa']);
+  }
+
   getStatusLabel(status: TournamentStatus): string {
     const labels: Record<TournamentStatus, string> = {
       borrador: '● Borrador',

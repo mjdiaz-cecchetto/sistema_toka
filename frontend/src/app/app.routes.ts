@@ -23,6 +23,10 @@ export const routes: Routes = [
         loadComponent: () => import('./admin/ui/tournament-inscriptions/tournament-inscriptions.component').then(m => m.TournamentInscriptionsComponent)
       },
       {
+        path: 'torneo/:id/vista-previa',
+        loadComponent: () => import('./admin/ui/tournament-preview/tournament-preview.component').then(m => m.TournamentPreviewComponent)
+      },
+      {
         path: 'categorias',
         loadComponent: () => import('./admin/ui/categories/categories.component').then(m => m.CategoriesComponent)
       },
