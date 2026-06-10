@@ -52,6 +52,7 @@
   position: relative; 
   background-size: cover;
   background-position: center;
+  overflow: hidden;
 }
 .cover-1 { 
   background: linear-gradient(135deg, rgba(30, 58, 138, 0.95), rgba(59, 130, 246, 0.8)), 
@@ -432,6 +433,18 @@
   cursor: pointer;
   box-shadow: 0 4px 12px rgba(99, 102, 241, 0.2);
   transition: all 0.2s ease;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  
+  svg {
+    width: 16px;
+    height: 16px;
+    fill: none;
+    stroke: currentColor;
+    stroke-width: 2.5;
+    flex-shrink: 0;
+  }
   
   &:hover:not(:disabled) {
     background: var(--accent-hover);
@@ -885,10 +898,142 @@
   100% { transform: scale(1.02); opacity: 1; }
 }
 
-.header-actions-bar { margin-bottom: 20px; }
-.btn-back { display: inline-flex; align-items: center; gap: 6px; padding: 8px 16px; background: white; border: 1px solid var(--border-color-premium); border-radius: 10px; font-weight: 600; font-size: 13px; color: var(--text-secondary); cursor: pointer; transition: all 0.2s ease; }
-.btn-back svg { width: 16px; height: 16px; fill: none; stroke: currentColor; stroke-width: 2; }
-.btn-back:hover { background: #f8fafc; color: var(--text-primary); transform: translateX(-2px); }
+/* Botón Volver dentro del banner */
+.btn-back-banner {
+  position: absolute;
+  top: 16px;
+  left: 20px;
+  z-index: 20;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 16px;
+  background: rgba(255, 255, 255, 0.18);
+  border: 1.5px solid rgba(255, 255, 255, 0.45);
+  border-radius: 12px;
+  font-weight: 700;
+  font-size: 13px;
+  color: white;
+  cursor: pointer;
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  transition: all 0.2s ease;
+  letter-spacing: 0.2px;
+  text-shadow: 0 1px 3px rgba(0,0,0,0.25);
+  
+  svg {
+    width: 16px;
+    height: 16px;
+    fill: none;
+    stroke: currentColor;
+    stroke-width: 2.5;
+    transition: transform 0.2s ease;
+  }
+  
+  &:hover {
+    background: rgba(255, 255, 255, 0.3);
+    border-color: rgba(255, 255, 255, 0.7);
+    transform: translateX(-3px);
+    
+    svg { transform: translateX(-2px); }
+  }
+}
+
 .grid-layout { display: flex; flex-direction: column; gap: 24px; }
 .pill-grade { background: #f1f5f9; padding: 2px 8px; border-radius: 6px; font-size: 11px; font-weight: 600; color: var(--text-primary); border: 1px solid #e2e8f0; }
+
+/* School Context Bar */
+.school-context-bar {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  background: linear-gradient(135deg, rgba(99, 102, 241, 0.06) 0%, rgba(99, 102, 241, 0.02) 100%);
+  border: 1.5px solid rgba(99, 102, 241, 0.18);
+  border-radius: 14px;
+  padding: 12px 18px;
+  margin-bottom: 20px;
+  
+  .school-context-icon {
+    font-size: 26px;
+    flex-shrink: 0;
+  }
+  
+  .school-context-info {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    
+    .school-context-label {
+      font-size: 10.5px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.6px;
+      color: var(--accent-color);
+    }
+    
+    .school-context-name {
+      font-size: 15px;
+      font-weight: 700;
+      color: var(--text-primary);
+    }
+  }
+  
+  .school-switch-select {
+    padding: 6px 12px;
+    border-radius: 8px;
+    border: 1.5px solid rgba(99, 102, 241, 0.25);
+    background: white;
+    font-size: 12.5px;
+    font-weight: 600;
+    color: var(--text-secondary);
+    cursor: pointer;
+    outline: none;
+    transition: all 0.2s ease;
+    
+    &:focus {
+      border-color: var(--accent-color);
+      box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.1);
+    }
+  }
+}
+
+/* Modalidades Pills en la tabla */
+.modalidades-pills {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+}
+
+.pill-modalidad {
+  display: inline-flex;
+  align-items: center;
+  gap: 3px;
+  padding: 3px 9px;
+  border-radius: 6px;
+  font-size: 10.5px;
+  font-weight: 700;
+  white-space: nowrap;
+  
+  &.lucha {
+    background: rgba(59, 130, 246, 0.1);
+    color: #2563eb;
+    border: 1px solid rgba(59, 130, 246, 0.2);
+  }
+  
+  &.tul {
+    background: rgba(139, 92, 246, 0.1);
+    color: #7c3aed;
+    border: 1px solid rgba(139, 92, 246, 0.2);
+  }
+}
+
+/* Error de campo */
+.field-error {
+  font-size: 11.5px;
+  color: #ef4444;
+  font-weight: 600;
+  margin-top: 6px;
+  display: block;
+}
 

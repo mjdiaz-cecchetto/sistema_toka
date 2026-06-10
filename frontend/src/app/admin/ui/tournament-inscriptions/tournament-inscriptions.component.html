@@ -1,17 +1,15 @@
 @if (tournament()) {
   <div class="view active">
-    <!-- Header with Back Button -->
-    <div class="header-actions-bar">
-      <button class="btn-back" (click)="goBack()">
-        <svg viewBox="0 0 24 24"><path d="M15 18l-6-6 6-6"/></svg>
-        Volver
-      </button>
-    </div>
 
-    <!-- Banner Header -->
+    <!-- Banner Header (con botón Volver adentro) -->
     <div class="banner-header">
       <div class="banner-cover" [class]="tournament()!.coverClass">
         <div class="cover-overlay"></div>
+        <!-- Botón Volver dentro del banner, sobre la imagen -->
+        <button class="btn-back-banner" (click)="goBack()">
+          <svg viewBox="0 0 24 24"><path d="M15 18l-6-6 6-6"/></svg>
+          Volver
+        </button>
       </div>
       <div class="banner-content">
         <div class="banner-left">
@@ -51,72 +49,151 @@
           <p>Completá el formulario para registrar un competidor en este torneo.</p>
         </div>
 
+        <!-- Escuela del maestro (cargada automáticamente) -->
+        <div class="school-context-bar">
+          <span class="school-context-icon">🏫</span>
+          <div class="school-context-info">
+            <span class="school-context-label">Escuela</span>
+            <span class="school-context-name">{{ selectedSchool()?.nombre || 'Sin escuela seleccionada' }}</span>
+          </div>
+          <select class="school-switch-select" (change)="onSchoolChange($event)">
+            @for (school of schools(); track school.id) {
+              <option [value]="school.id" [selected]="selectedSchool()?.id === school.id">
+                {{ school.nombre }}
+              </option>
+            }
+          </select>
+        </div>
+
         <form [formGroup]="inscriptionForm" (ngSubmit)="onSubmit()" class="form-layout">
+
+          <!-- Nombre y Apellido -->
           <div class="form-grid-two">
             <div class="form-group-custom">
-              <label>Nombre y Apellido</label>
-              <input formControlName="nombre" class="form-input-premium" placeholder="Ej: Juan Pérez">
+              <label>Nombre</label>
+              <input formControlName="nombre" class="form-input-premium" placeholder="Ej: Juan">
             </div>
+            <div class="form-group-custom">
+              <label>Apellido</label>
+              <input formControlName="apellido" class="form-input-premium" placeholder="Ej: Pérez">
+            </div>
+          </div>
+
+          <!-- DNI y Fecha de Nacimiento -->
+          <div class="form-grid-two">
             <div class="form-group-custom">
               <label>DNI</label>
               <input formControlName="dni" class="form-input-premium" placeholder="Ej: 12345678">
             </div>
-          </div>
-
-          <div class="form-grid-three">
             <div class="form-group-custom">
-              <label>Fecha Nacimiento</label>
+              <label>Fecha de Nacimiento</label>
               <input type="date" formControlName="fechaNacimiento" class="form-input-premium">
             </div>
+          </div>
+
+          <!-- Sexo y Graduación -->
+          <div class="form-grid-two">
             <div class="form-group-custom">
-              <label>Edad (Categoría)</label>
-              <select formControlName="edad" class="form-select-premium">
-                <option value="Infantil">Infantil</option>
-                <option value="Cadete">Cadete</option>
-                <option value="Juvenil">Juvenil</option>
-                <option value="Senior">Senior</option>
-                <option value="Master">Master</option>
-              </select>
-            </div>
-            <div class="form-group-custom">
-              <label>Género</label>
-              <select formControlName="genero" class="form-select-premium">
+              <label>Sexo</label>
+              <select formControlName="sexo" class="form-select-premium">
                 <option value="Masculino">Masculino</option>
                 <option value="Femenino">Femenino</option>
               </select>
             </div>
+            <div class="form-group-custom">
+              <label>Graduación</label>
+              <select formControlName="graduacion" class="form-select-premium">
+                <optgroup label="Gup (Colores)">
+                  <option value="10° Gup">10° Gup — Blanco</option>
+                  <option value="9° Gup">9° Gup — Blanco Punta Amarilla</option>
+                  <option value="8° Gup">8° Gup — Amarillo</option>
+                  <option value="7° Gup">7° Gup — Amarillo Punta Verde</option>
+                  <option value="6° Gup">6° Gup — Verde</option>
+                  <option value="5° Gup">5° Gup — Verde Punta Azul</option>
+                  <option value="4° Gup">4° Gup — Azul</option>
+                  <option value="3° Gup">3° Gup — Azul Punta Roja</option>
+                  <option value="2° Gup">2° Gup — Rojo</option>
+                  <option value="1° Gup">1° Gup — Rojo Punta Negra</option>
+                </optgroup>
+                <optgroup label="Dan (Negro)">
+                  <option value="1° Dan">1° Dan</option>
+                  <option value="2° Dan">2° Dan</option>
+                  <option value="3° Dan">3° Dan</option>
+                  <option value="4° Dan">4° Dan</option>
+                </optgroup>
+              </select>
+            </div>
           </div>
 
-          <div class="form-grid-three">
-            <div class="form-group-custom">
-              <label>Peso</label>
-              <input formControlName="peso" class="form-input-premium" placeholder="Ej: -63kg">
+          <!-- Modalidades -->
+          <div class="form-group-custom">
+            <label>Modalidad(es)</label>
+            <div class="modalities-cards-grid">
+              <!-- Lucha Individual -->
+              <div class="modality-card" [class.active]="modalidadLuchaIndividual()" (click)="toggleModalidad('luchaIndividual')">
+                <div class="modality-icon">🥊</div>
+                <div class="modality-info">
+                  <h4>Lucha Individual</h4>
+                  <p>Combate uno a uno</p>
+                </div>
+                <div class="modality-checkbox">
+                  <div class="checkbox-ui" [class.checked]="modalidadLuchaIndividual()"></div>
+                </div>
+              </div>
+              <!-- Lucha por Equipo -->
+              <div class="modality-card" [class.active]="modalidadLuchaEquipo()" (click)="toggleModalidad('luchaEquipo')">
+                <div class="modality-icon">🥋</div>
+                <div class="modality-info">
+                  <h4>Lucha por Equipo</h4>
+                  <p>Competencia grupal</p>
+                </div>
+                <div class="modality-checkbox">
+                  <div class="checkbox-ui" [class.checked]="modalidadLuchaEquipo()"></div>
+                </div>
+              </div>
+              <!-- Tul Individual -->
+              <div class="modality-card" [class.active]="modalidadTulIndividual()" (click)="toggleModalidad('tulIndividual')">
+                <div class="modality-icon">🌟</div>
+                <div class="modality-info">
+                  <h4>Tul Individual</h4>
+                  <p>Forma técnica individual</p>
+                </div>
+                <div class="modality-checkbox">
+                  <div class="checkbox-ui" [class.checked]="modalidadTulIndividual()"></div>
+                </div>
+              </div>
+              <!-- Tul por Equipo -->
+              <div class="modality-card" [class.active]="modalidadTulEquipo()" (click)="toggleModalidad('tulEquipo')">
+                <div class="modality-icon">🏅</div>
+                <div class="modality-info">
+                  <h4>Tul por Equipo</h4>
+                  <p>Forma técnica grupal</p>
+                </div>
+                <div class="modality-checkbox">
+                  <div class="checkbox-ui" [class.checked]="modalidadTulEquipo()"></div>
+                </div>
+              </div>
             </div>
-            <div class="form-group-custom">
-              <label>Grado / Cinturón</label>
-              <select formControlName="grado" class="form-select-premium">
-                <option value="Blanco">Blanco</option>
-                <option value="Amarillo">Amarillo</option>
-                <option value="Verde">Verde</option>
-                <option value="Azul">Azul</option>
-                <option value="Rojo">Rojo</option>
-                <option value="Negro">Negro</option>
-              </select>
-            </div>
-            <div class="form-group-custom">
-              <label>Escuela / Club</label>
-              <select formControlName="club" class="form-select-premium">
-                <option value="">Seleccionar...</option>
-                @for (school of schools(); track school.id) {
-                  <option [value]="school.nombre">{{ school.nombre }}</option>
-                }
-              </select>
-            </div>
+            @if (noModalidadSeleccionada()) {
+              <span class="field-error">Seleccioná al menos una modalidad.</span>
+            }
+          </div>
+
+          <!-- Instructor -->
+          <div class="form-group-custom">
+            <label>Instructor</label>
+            <select formControlName="instructor" class="form-select-premium">
+              <option value="">Seleccionar instructor...</option>
+              @for (inst of instructoresEscuela(); track inst.dni) {
+                <option [value]="inst.nombre">{{ inst.nombre }} — {{ inst.graduacion }} ({{ inst.rol }})</option>
+              }
+            </select>
           </div>
 
           <div class="form-actions-premium">
-            <button type="submit" class="btn-primary-premium" [disabled]="inscriptionForm.invalid">
-              Registrar Competidor
+            <button type="submit" class="btn-primary-premium" [disabled]="inscriptionForm.invalid || noModalidadSeleccionada()">
+              <svg viewBox="0 0 24 24"><path d="M12 5v14M5 12l7 7 7-7"/></svg>
+              Inscribir Competidor
             </button>
           </div>
         </form>
@@ -139,31 +216,41 @@
             <thead>
               <tr>
                 <th>Competidor</th>
-                <th>Escuela</th>
-                <th>Categoría</th>
-                <th>Grado</th>
+                <th>Graduación</th>
+                <th>Modalidades</th>
+                <th>Instructor</th>
               </tr>
             </thead>
             <tbody>
               @for (comp of sessionCompetitors(); track comp.dni) {
                 <tr>
                   <td>
-                    <div class="cat-title">{{ comp.nombre }}</div>
-                    <div class="cat-sub">DNI: {{ comp.dni }}</div>
-                  </td>
-                  <td>{{ comp.club }}</td>
-                  <td>
-                    <span class="pill-gender">{{ comp.genero }}</span> · <span class="pill-weight">{{ comp.edad }} {{ comp.peso }}</span>
+                    <div class="cat-title">{{ comp.nombre }} {{ comp.apellido }}</div>
+                    <div class="cat-sub">DNI: {{ comp.dni }} · {{ comp.sexo }}</div>
+                    <div class="cat-sub">Nac: {{ comp.fechaNacimiento }}</div>
                   </td>
                   <td>
-                    <span class="pill-grade">{{ comp.grado }}</span>
+                    <span class="pill-grade">{{ comp.graduacion }}</span>
+                  </td>
+                  <td>
+                    <div class="modalidades-pills">
+                      @if (comp.luchaIndividual) { <span class="pill-modalidad lucha">🥊 Lucha Ind.</span> }
+                      @if (comp.luchaEquipo) { <span class="pill-modalidad lucha">🥋 Lucha Eq.</span> }
+                      @if (comp.tulIndividual) { <span class="pill-modalidad tul">🌟 Tul Ind.</span> }
+                      @if (comp.tulEquipo) { <span class="pill-modalidad tul">🏅 Tul Eq.</span> }
+                    </div>
+                  </td>
+                  <td>
+                    <div class="cat-title">{{ comp.instructor }}</div>
+                    <div class="cat-sub">{{ comp.escuela }}</div>
                   </td>
                 </tr>
               }
               @if (sessionCompetitors().length === 0) {
                 <tr>
-                  <td colspan="4" style="text-align: center; color: var(--text-muted); padding: 30px;">
-                    No hay competidores inscriptos en esta sesión aún.
+                  <td colspan="4" style="text-align: center; color: var(--text-muted); padding: 40px;">
+                    <div style="font-size: 32px; margin-bottom: 8px;">📋</div>
+                    No hay competidores inscriptos aún.
                   </td>
                 </tr>
               }
@@ -174,4 +261,3 @@
     </div>
   </div>
 }
-

@@ -30,22 +30,58 @@ export class TournamentInscriptionsComponent {
 
   schools = this.schoolService.schools;
 
-  // We can filter competitors registered for THIS tournament if we had a tournamentId on the competitor. 
-  // Currently Competitor model doesn't have tournamentId, but since it's a demo, we show the global competitors or local ones.
-  // We'll keep a local signal for competitors added in this session for this tournament for display purposes.
+  // Escuela seleccionada (por defecto la primera)
+  private selectedSchoolId = signal<string>(this.schoolService.schools()[0]?.id ?? '');
+
+  selectedSchool = computed(() =>
+    this.schools().find(s => s.id === this.selectedSchoolId()) || null
+  );
+
+  // Instructores de la escuela seleccionada
+  instructoresEscuela = computed(() =>
+    this.selectedSchool()?.instructores ?? []
+  );
+
+  // Modalidades como signals individuales (checkboxes)
+  modalidadLuchaIndividual = signal(false);
+  modalidadLuchaEquipo = signal(false);
+  modalidadTulIndividual = signal(false);
+  modalidadTulEquipo = signal(false);
+
+  noModalidadSeleccionada = computed(() =>
+    !this.modalidadLuchaIndividual() &&
+    !this.modalidadLuchaEquipo() &&
+    !this.modalidadTulIndividual() &&
+    !this.modalidadTulEquipo()
+  );
+
+  toggleModalidad(mod: 'luchaIndividual' | 'luchaEquipo' | 'tulIndividual' | 'tulEquipo') {
+    switch (mod) {
+      case 'luchaIndividual': this.modalidadLuchaIndividual.update(v => !v); break;
+      case 'luchaEquipo': this.modalidadLuchaEquipo.update(v => !v); break;
+      case 'tulIndividual': this.modalidadTulIndividual.update(v => !v); break;
+      case 'tulEquipo': this.modalidadTulEquipo.update(v => !v); break;
+    }
+  }
+
+  onSchoolChange(event: Event) {
+    const id = (event.target as HTMLSelectElement).value;
+    this.selectedSchoolId.set(id);
+    // Reset instructor when school changes
+    this.inscriptionForm.patchValue({ instructor: '' });
+  }
+
+  // Competitors added in this session
   sessionCompetitors = signal<any[]>([]);
 
   inscriptionForm = this.fb.group({
     nombre: ['', Validators.required],
+    apellido: ['', Validators.required],
     dni: ['', Validators.required],
     fechaNacimiento: ['', Validators.required],
-    edad: ['Senior', Validators.required],
-    genero: ['Masculino', Validators.required],
-    peso: ['-63kg', Validators.required],
-    club: ['', Validators.required],
-    grado: ['Amarillo', Validators.required],
-    telefono: [''],
-    email: ['']
+    sexo: ['Masculino', Validators.required],
+    graduacion: ['10° Gup', Validators.required],
+    instructor: ['', Validators.required],
   });
 
   getStatusLabel(status: TournamentStatus): string {
@@ -66,20 +102,30 @@ export class TournamentInscriptionsComponent {
   }
 
   onSubmit() {
-    if (this.inscriptionForm.valid) {
+    if (this.inscriptionForm.valid && !this.noModalidadSeleccionada()) {
       const val = this.inscriptionForm.value;
-      this.competitorService.addCompetitor(val as any);
-      
-      this.sessionCompetitors.update(curr => [...curr, val]);
-      
+      const competitor = {
+        ...val,
+        escuela: this.selectedSchool()?.nombre ?? '',
+        luchaIndividual: this.modalidadLuchaIndividual(),
+        luchaEquipo: this.modalidadLuchaEquipo(),
+        tulIndividual: this.modalidadTulIndividual(),
+        tulEquipo: this.modalidadTulEquipo(),
+      };
+
+      this.sessionCompetitors.update(curr => [...curr, competitor]);
+
       this.inscriptionForm.reset({
-        edad: 'Senior',
-        genero: 'Masculino',
-        peso: '-63kg',
-        grado: 'Amarillo',
-        club: val.club || ''
+        sexo: 'Masculino',
+        graduacion: '10° Gup',
+        instructor: '',
       });
-      alert('¡Competidor inscripto con éxito!');
+
+      // Reset modalidades
+      this.modalidadLuchaIndividual.set(false);
+      this.modalidadLuchaEquipo.set(false);
+      this.modalidadTulIndividual.set(false);
+      this.modalidadTulEquipo.set(false);
     }
   }
 }
