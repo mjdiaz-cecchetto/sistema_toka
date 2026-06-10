@@ -3,7 +3,7 @@
 
 .section-title-line { display: flex; align-items: center; gap: 16px; margin-bottom: 24px; }
 .group-title { font-size: 24px; font-weight: 800; color: var(--text-primary); letter-spacing: -0.5px; white-space: nowrap; }
-.title-accent { height: 4px; background: #e2e8f0; flex: 1; border-radius: 2px; }
+.title-accent { height: 4px; background: var(--bg-element-hover); flex: 1; border-radius: 2px; }
 
 .header-main { 
   display: flex; 
@@ -21,7 +21,7 @@
 
 .search-box { 
   position: relative; 
-  background: white; 
+  background: var(--card-bg); 
   border: 1.5px solid var(--border); 
   border-radius: 14px; 
   display: flex; 
@@ -54,7 +54,7 @@
   }
 }
 
-.template-card { background: white; border-radius: 20px; border: 1px solid var(--border); overflow: hidden; box-shadow: var(--shadow-md); transition: transform .2s; }
+.template-card { background: var(--card-bg); border-radius: 20px; border: 1px solid var(--border); overflow: hidden; box-shadow: var(--shadow-md); transition: transform .2s; }
 .template-card:hover { transform: translateY(-4px); }
 
 .card-header { padding: 16px 24px; text-align: center; color: white; display: flex; flex-direction: column; gap: 2px; }
@@ -65,25 +65,25 @@
 .card-header.dan { background: #0f172a; box-shadow: inset 0 -10px 20px rgba(0,0,0,0.2); }
 
 .weight-table { width: 100%; border-collapse: collapse; }
-.weight-table th { width: 50%; padding: 14px; font-size: 12px; text-transform: uppercase; color: var(--text-secondary); border-bottom: 1px solid var(--border); border-right: 1px solid var(--border); background: #fafafa; position: relative; }
+.weight-table th { width: 50%; padding: 14px; font-size: 12px; text-transform: uppercase; color: var(--text-secondary); border-bottom: 1px solid var(--border); border-right: 1px solid var(--border); background: var(--bg-surface); position: relative; }
 .weight-table th:last-child { border-right: none; }
 
-.btn-edit-inline { position: absolute; right: 10px; top: 10px; background: white; border: 1px solid var(--border); width: 26px; height: 26px; border-radius: 6px; display: flex; align-items: center; justify-content: center; cursor: pointer; color: var(--text-muted); transition: all .2s; }
+.btn-edit-inline { position: absolute; right: 10px; top: 10px; background: var(--card-bg); border: 1px solid var(--border); width: 26px; height: 26px; border-radius: 6px; display: flex; align-items: center; justify-content: center; cursor: pointer; color: var(--text-muted); transition: all .2s; }
 .btn-edit-inline:hover { color: var(--accent); border-color: var(--accent); transform: scale(1.1); }
 .btn-edit-inline svg { width: 14px; height: 14px; fill: none; stroke: currentColor; stroke-width: 2; }
 
 .weight-table td { padding: 14px; font-size: 14.5px; text-align: center; color: var(--text-primary); border-bottom: 1px solid var(--border); border-right: 1px solid var(--border); font-weight: 500; }
 .weight-table td:last-child { border-right: none; }
-.weight-table tr:hover td { background: #f8fafc; }
+.weight-table tr:hover td { background: var(--bg-surface-hover); }
 
 /* Modal Styles */
 .edit-weights-list { display: flex; flex-direction: column; gap: 12px; }
 .weight-edit-row { display: flex; gap: 10px; align-items: center; }
 .input-suffix-wrap { flex: 1; position: relative; }
 .input-suffix-wrap .form-input { padding-right: 45px; }
-.input-suffix-wrap .suffix { position: absolute; right: 12px; top: 50%; transform: translateY(-50%); font-weight: 700; color: var(--text-muted); font-size: 13px; background: #f1f5f9; padding: 4px 8px; border-radius: 4px; pointer-events: none; }
+.input-suffix-wrap .suffix { position: absolute; right: 12px; top: 50%; transform: translateY(-50%); font-weight: 700; color: var(--text-muted); font-size: 13px; background: var(--bg-element); padding: 4px 8px; border-radius: 4px; pointer-events: none; }
 
-.btn-remove-weight { background: #fee2e2; border: none; width: 44px; height: 44px; border-radius: 8px; display: flex; align-items: center; justify-content: center; color: #dc2626; cursor: pointer; flex-shrink: 0; }
+.btn-remove-weight { background: var(--danger-light); border: none; width: 44px; height: 44px; border-radius: 8px; display: flex; align-items: center; justify-content: center; color: #dc2626; cursor: pointer; flex-shrink: 0; }
 .btn-remove-weight svg { width: 20px; height: 20px; fill: none; stroke: currentColor; stroke-width: 2; }
-.btn-add-weight { margin-top: 12px; padding: 12px; border: 2px dashed var(--border); background: #fafafa; border-radius: 8px; color: var(--text-secondary); font-weight: 600; cursor: pointer; transition: all .2s; }
-.btn-add-weight:hover { background: #f1f5f9; border-color: var(--accent); color: var(--accent); }
+.btn-add-weight { margin-top: 12px; padding: 12px; border: 2px dashed var(--border); background: var(--bg-surface); border-radius: 8px; color: var(--text-secondary); font-weight: 600; cursor: pointer; transition: all .2s; }
+.btn-add-weight:hover { background: var(--bg-element); border-color: var(--accent); color: var(--accent); }

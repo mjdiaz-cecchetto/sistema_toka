@@ -8,26 +8,80 @@
 
   --danger: #E81123;        /* Rojo santiagueño vibrante */
   --danger-h: #C50F1E;
+  --danger-light: #fee2e2;
 
   --warning: #FCD116;       /* Amarillo sol (oro) */
   --warning-light: #FFF9E6;
+
+  --success: #15803d;
+  --success-light: #dcfce7;
+  --success-bg: #f0fdf4;
 
   --sidebar-bg: #FFFFFF;
   --sidebar-w: 220px;
 
   --main-bg: #F5F7FA;
   --card-bg: #FFFFFF;
+  --card-bg-hover: #fafafa;
+  --bg-surface: #fafafa;
+  --bg-surface-hover: #f8fafc;
+  --bg-element: #f1f5f9;
+  --bg-element-hover: #e2e8f0;
 
   --text-primary: #1C2430;
   --text-secondary: #5E6B7A;
   --text-muted: #94A0AE;
+  --text-inverse: #FFFFFF;
 
   --border: #DCE4EE;
+  --border-dark: #cbd5e1;
 
   --radius: 12px;
 
   --shadow: 0 1px 3px rgba(0,0,0,0.08);
   --shadow-md: 0 4px 12px rgba(0,0,0,0.10);
+  
+  --input-bg: #ffffff;
+}
+
+[data-theme="dark"] {
+  --accent: #60A5FA;
+  --accent-h: #93C5FD;
+  --accent-light: #1E3A8A;
+
+  --danger: #F87171;
+  --danger-h: #FCA5A5;
+  --danger-light: #7F1D1D;
+
+  --warning: #FBBF24;
+  --warning-light: #78350F;
+
+  --success: #4ADE80;
+  --success-light: #14532D;
+  --success-bg: #064E3B;
+
+  --sidebar-bg: #111827;
+
+  --main-bg: #0F172A;
+  --card-bg: #1E293B;
+  --card-bg-hover: #334155;
+  --bg-surface: #0f172a;
+  --bg-surface-hover: #1e293b;
+  --bg-element: #334155;
+  --bg-element-hover: #475569;
+
+  --text-primary: #F8FAFC;
+  --text-secondary: #CBD5E1;
+  --text-muted: #64748B;
+  --text-inverse: #0F172A;
+
+  --border: #334155;
+  --border-dark: #475569;
+
+  --shadow: 0 1px 3px rgba(0,0,0,0.5);
+  --shadow-md: 0 4px 12px rgba(0,0,0,0.5);
+  
+  --input-bg: #0F172A;
 }
 
 body { 
@@ -75,7 +129,7 @@ app-root, app-layout {
   border: 1.5px solid var(--border); 
   font-size: 15px; 
   color: var(--text-primary); 
-  background: white; 
+  background: var(--input-bg); 
   outline: none; 
   font-family: inherit;
   transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);

@@ -1,5 +1,6 @@
-import { ChangeDetectionStrategy, Component, input, output } from '@angular/core';
+import { ChangeDetectionStrategy, Component, inject, input, output } from '@angular/core';
 import { RouterLink, RouterLinkActive } from '@angular/router';
+import { ThemeService } from '../../shared/services/theme.service';
 
 @Component({
   selector: 'app-sidebar',
@@ -12,6 +13,7 @@ import { RouterLink, RouterLinkActive } from '@angular/router';
   }
 })
 export class SidebarComponent {
+  themeService = inject(ThemeService);
   isOpen = input(false);
   close = output();
   navClick = output<string>();

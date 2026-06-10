@@ -1,6 +1,7 @@
-import { ChangeDetectionStrategy, Component, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, inject, signal } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
 import { SidebarComponent } from '../sidebar/sidebar.component';
+import { ThemeService } from '../../shared/services/theme.service';
 
 @Component({
   selector: 'app-layout',
@@ -13,6 +14,7 @@ import { SidebarComponent } from '../sidebar/sidebar.component';
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class LayoutComponent {
+  themeService = inject(ThemeService); // Ensure ThemeService is instantiated here to apply theme on load
   isSidebarOpen = signal(false);
 
   toggleSidebar() {

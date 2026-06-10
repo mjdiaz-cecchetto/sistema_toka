@@ -3,7 +3,7 @@
 .page-subtitle { font-size: 16px; color: var(--text-secondary); margin-top: 6px; }
 
 .cat-tabs { display: flex; gap: 8px; margin-bottom: 24px; flex-wrap: wrap; }
-.cat-tab { padding: 8px 18px; border-radius: 20px; font-size: 15px; font-weight: 500; cursor: pointer; border: 1px solid var(--border); background: white; color: var(--text-secondary); transition: background .15s,color .15s,border-color .15s; font-family: inherit; }
+.cat-tab { padding: 8px 18px; border-radius: 20px; font-size: 15px; font-weight: 500; cursor: pointer; border: 1px solid var(--border); background: var(--card-bg); color: var(--text-secondary); transition: background .15s,color .15s,border-color .15s; font-family: inherit; }
 .cat-tab:hover { background: var(--main-bg); }
 .cat-tab.active { background: var(--accent); color: white; border-color: var(--accent); }
 
@@ -12,9 +12,9 @@
 .round-col { display: flex; flex-direction: column; min-width: 180px; }
 .round-label { font-size: 13px; font-weight: 600; color: var(--text-secondary); text-align: center; letter-spacing: .5px; text-transform: uppercase; margin-bottom: 18px; padding: 0 10px; }
 .matchup { display: flex; flex-direction: column; gap: 4px; margin: 12px; position: relative; }
-.fighter-slot { background: white; border: 1px solid var(--border); border-radius: 10px; padding: 10px 14px; font-size: 15px; cursor: pointer; color: var(--text-primary); transition: background .1s, border-color .1s; user-select: none; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 160px; }
+.fighter-slot { background: var(--card-bg); border: 1px solid var(--border); border-radius: 10px; padding: 10px 14px; font-size: 15px; cursor: pointer; color: var(--text-primary); transition: background .1s, border-color .1s; user-select: none; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 160px; }
 .fighter-slot:hover:not(.slot-bye):not(.slot-empty) { border-color: var(--accent); background: var(--accent-light); }
-.fighter-slot.slot-winner { border-color: #16A34A; background: #F0FDF4; color: #15803D; font-weight: 600; }
+.fighter-slot.slot-winner { border-color: #16A34A; background: var(--success-bg); color: #15803D; font-weight: 600; }
 .fighter-slot.slot-bye { color: var(--text-muted); font-style: italic; background: #FAFAF8; font-size: 14px; cursor: default; }
 .fighter-slot.slot-empty { color: var(--text-muted); border-style: dashed; background: #FAFAF8; font-size: 14px; cursor: default; }
 .vs-sep { text-align: center; font-size: 11px; color: var(--text-muted); }

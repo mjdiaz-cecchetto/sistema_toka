@@ -36,7 +36,7 @@
 
 .form-group { display: flex; flex-direction: column; gap: 4px; }
 .form-label { font-size: 12px; font-weight: 500; color: var(--text-secondary); }
-.form-input, .form-select { padding: 8px 11px; border: 1px solid var(--border); border-radius: 8px; font-size: 13.5px; font-family: inherit; color: var(--text-primary); background: white; outline: none; transition: border-color .15s; width: 100%; }
+.form-input, .form-select { padding: 8px 11px; border: 1px solid var(--border); border-radius: 8px; font-size: 13.5px; font-family: inherit; color: var(--text-primary); background: var(--card-bg); outline: none; transition: border-color .15s; width: 100%; }
 .form-input:focus, .form-select:focus { border-color: var(--accent); }
 
 .modalities-chips {
@@ -47,7 +47,7 @@
   
   .chip {
     padding: 6px 12px;
-    background: #f1f5f9;
+    background: var(--bg-element);
     border: 1px solid #cbd5e1;
     border-radius: 20px;
     font-size: 12px;
@@ -58,8 +58,8 @@
     user-select: none;
     
     &:hover {
-      background: #e2e8f0;
-      border-color: #94a3b8;
+      background: var(--bg-element-hover);
+      border-color: var(--text-muted);
       color: var(--text-primary);
     }
     

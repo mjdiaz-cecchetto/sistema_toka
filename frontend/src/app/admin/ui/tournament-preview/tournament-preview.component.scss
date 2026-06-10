@@ -34,7 +34,7 @@
 
 /* Consolidated Medium-Sized Header Banner */
 .tournament-header-premium {
-  background: white;
+  background: var(--card-bg);
   border-radius: 20px;
   padding: 20px 24px;
   border: 1px solid var(--border-color-premium);
@@ -59,7 +59,7 @@
   height: 32px;
   border-radius: 8px;
   border: 1px solid var(--border-color-premium);
-  background: white;
+  background: var(--card-bg);
   color: var(--text-secondary);
   display: flex;
   align-items: center;
@@ -110,7 +110,7 @@
   flex-wrap: wrap;
   margin-top: 14px;
   padding-top: 14px;
-  border-top: 1px solid #f1f5f9;
+  border-top: 1px solid var(--border);
   padding-left: 44px;
 
   @media (max-width: 768px) {
@@ -125,10 +125,10 @@
   font-size: 12px;
   font-weight: 600;
   color: #334155;
-  background: #f8fafc;
+  background: var(--bg-surface-hover);
   padding: 6px 12px;
   border-radius: 8px;
-  border: 1px solid #e2e8f0;
+  border: 1px solid var(--border);
 
   strong {
     color: var(--accent-color);
@@ -168,7 +168,7 @@
 
 /* Compact Card base */
 .section-card-flat-compact {
-  background: white;
+  background: var(--card-bg);
   border-radius: 16px;
   border: 1px solid var(--border-color-premium);
   box-shadow: 0 2px 10px rgba(0, 0, 0, 0.02);
@@ -219,13 +219,13 @@
   font-size: 13.5px;
   color: var(--text-primary);
   outline: none;
-  background: #f8fafc;
+  background: var(--bg-surface-hover);
   transition: all 0.2s ease;
   height: 36px;
 
   &:focus {
     border-color: var(--accent-color);
-    background: white;
+    background: var(--card-bg);
     box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.08);
   }
 
@@ -235,7 +235,7 @@
 }
 
 .results-count-compact {
-  background: #f1f5f9;
+  background: var(--bg-element);
   color: var(--text-secondary);
   font-size: 11.5px;
   font-weight: 800;
@@ -245,7 +245,7 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  border: 1px solid #e2e8f0;
+  border: 1px solid var(--border);
 }
 
 /* Scrollable Competitors List */
@@ -264,7 +264,7 @@
     background: transparent;
   }
   &::-webkit-scrollbar-thumb {
-    background: #e2e8f0;
+    background: var(--bg-element-hover);
     border-radius: 10px;
   }
 }
@@ -275,20 +275,20 @@
   align-items: center;
   gap: 12px;
   padding: 10px 14px;
-  background: #f8fafc;
-  border: 1px solid #e2e8f0;
+  background: var(--bg-surface-hover);
+  border: 1px solid var(--border);
   border-radius: 10px;
   cursor: pointer;
   transition: all 0.2s ease;
   user-select: none;
 
   &:hover {
-    background: #f1f5f9;
+    background: var(--bg-element);
     border-color: #cbd5e1;
   }
 
   &.active {
-    background: white;
+    background: var(--card-bg);
     border-color: var(--accent-color);
     box-shadow: 0 2px 8px rgba(99, 102, 241, 0.08);
   }
@@ -365,9 +365,9 @@
   }
 
   &.pending {
-    background: #f1f5f9;
+    background: var(--bg-element);
     color: var(--text-secondary);
-    border: 1px solid #e2e8f0;
+    border: 1px solid var(--border);
   }
 }
 
@@ -415,11 +415,11 @@
   span {
     font-size: 10.5px;
     font-weight: 700;
-    color: #475569;
-    background: #f1f5f9;
+    color: var(--text-secondary);
+    background: var(--bg-element);
     padding: 2px 6px;
     border-radius: 4px;
-    border: 1px solid #e2e8f0;
+    border: 1px solid var(--border);
   }
 }
 
@@ -456,7 +456,7 @@
 }
 
 .digital-scale-input-box {
-  background: #f8fafc;
+  background: var(--bg-surface-hover);
   border: 1.5px solid #cbd5e1;
   border-radius: 12px;
   padding: 8px 16px;
@@ -467,7 +467,7 @@
 
   &:focus-within {
     border-color: var(--accent-color);
-    background: white;
+    background: var(--card-bg);
     box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.06);
   }
 
@@ -515,10 +515,10 @@
 
   .slider-bar-compact {
     height: 8px;
-    background: #f1f5f9;
+    background: var(--bg-element);
     border-radius: 6px;
     overflow: hidden;
-    border: 1px solid #e2e8f0;
+    border: 1px solid var(--border);
   }
 
   .slider-fill-compact {
@@ -611,7 +611,7 @@
 
 .flowchart-node {
   flex: 1;
-  background: #f8fafc;
+  background: var(--bg-surface-hover);
   border: 1px solid #cbd5e1;
   border-radius: 8px;
   padding: 6px 10px;
