@@ -1,11 +1,45 @@
-import { Component, inject, computed, signal } from '@angular/core';
+import { Component, inject, computed, signal, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
-import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
+import { FormBuilder, ReactiveFormsModule, Validators, FormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { TournamentService } from '../../infrastructure/services/tournament.service';
 import { CompetitorService } from '../../infrastructure/services/competitor.service';
 import { SchoolService } from '../../infrastructure/services/school.service';
 import { TournamentStatus } from '../../models/tournament.interface';
+
+// Mock competitors for demo purposes
+const MOCK_COMPETITORS = [
+  {
+    nombre: 'Juan',
+    apellido: 'Pérez',
+    dni: '12345678',
+    fechaNacimiento: '1990-02-14',
+    sexo: 'Masculino',
+    graduacion: '1° Dan',
+    instructor: 'Maestro Kim',
+    escuela: 'Escuela Central',
+    luchaIndividual: true,
+    luchaEquipo: false,
+    tulIndividual: false,
+    tulEquipo: false,
+    peso: '',
+  },
+  {
+    nombre: 'Ana',
+    apellido: 'García',
+    dni: '87654321',
+    fechaNacimiento: '1995-07-30',
+    sexo: 'Femenino',
+    graduacion: '3° Gup',
+    instructor: 'Maestro Lee',
+    escuela: 'Escuela Norte',
+    luchaIndividual: false,
+    luchaEquipo: true,
+    tulIndividual: true,
+    tulEquipo: false,
+    peso: '',
+  },
+];
 
 @Component({
   selector: 'app-tournament-inscriptions',
@@ -14,7 +48,7 @@ import { TournamentStatus } from '../../models/tournament.interface';
   templateUrl: './tournament-inscriptions.component.html',
   styleUrl: './tournament-inscriptions.component.scss',
 })
-export class TournamentInscriptionsComponent {
+export class TournamentInscriptionsComponent implements OnInit {
   route = inject(ActivatedRoute);
   router = inject(Router);
   tournamentService = inject(TournamentService);
@@ -22,10 +56,15 @@ export class TournamentInscriptionsComponent {
   schoolService = inject(SchoolService);
   fb = inject(FormBuilder);
 
+  ngOnInit() {
+    // Load mock competitors for demonstration
+    this.sessionCompetitors.set([...MOCK_COMPETITORS]);
+  }
+
   tournamentId = this.route.snapshot.params['id'];
 
   tournament = computed(() => {
-    return this.tournamentService.tournaments().find(t => t.id === this.tournamentId) || null;
+    return this.tournamentService.tournaments().find((t) => t.id === this.tournamentId) || null;
   });
 
   schools = this.schoolService.schools;
@@ -33,14 +72,12 @@ export class TournamentInscriptionsComponent {
   // Escuela seleccionada (por defecto la primera)
   private selectedSchoolId = signal<string>(this.schoolService.schools()[0]?.id ?? '');
 
-  selectedSchool = computed(() =>
-    this.schools().find(s => s.id === this.selectedSchoolId()) || null
+  selectedSchool = computed(
+    () => this.schools().find((s) => s.id === this.selectedSchoolId()) || null,
   );
 
   // Instructores de la escuela seleccionada
-  instructoresEscuela = computed(() =>
-    this.selectedSchool()?.instructores ?? []
-  );
+  instructoresEscuela = computed(() => this.selectedSchool()?.instructores ?? []);
 
   // Modalidades como signals individuales (checkboxes)
   modalidadLuchaIndividual = signal(false);
@@ -48,19 +85,28 @@ export class TournamentInscriptionsComponent {
   modalidadTulIndividual = signal(false);
   modalidadTulEquipo = signal(false);
 
-  noModalidadSeleccionada = computed(() =>
-    !this.modalidadLuchaIndividual() &&
-    !this.modalidadLuchaEquipo() &&
-    !this.modalidadTulIndividual() &&
-    !this.modalidadTulEquipo()
+  noModalidadSeleccionada = computed(
+    () =>
+      !this.modalidadLuchaIndividual() &&
+      !this.modalidadLuchaEquipo() &&
+      !this.modalidadTulIndividual() &&
+      !this.modalidadTulEquipo(),
   );
 
   toggleModalidad(mod: 'luchaIndividual' | 'luchaEquipo' | 'tulIndividual' | 'tulEquipo') {
     switch (mod) {
-      case 'luchaIndividual': this.modalidadLuchaIndividual.update(v => !v); break;
-      case 'luchaEquipo': this.modalidadLuchaEquipo.update(v => !v); break;
-      case 'tulIndividual': this.modalidadTulIndividual.update(v => !v); break;
-      case 'tulEquipo': this.modalidadTulEquipo.update(v => !v); break;
+      case 'luchaIndividual':
+        this.modalidadLuchaIndividual.update((v) => !v);
+        break;
+      case 'luchaEquipo':
+        this.modalidadLuchaEquipo.update((v) => !v);
+        break;
+      case 'tulIndividual':
+        this.modalidadTulIndividual.update((v) => !v);
+        break;
+      case 'tulEquipo':
+        this.modalidadTulEquipo.update((v) => !v);
+        break;
     }
   }
 
@@ -92,40 +138,64 @@ export class TournamentInscriptionsComponent {
       en_curso: '● En Curso',
       finalizado: '● Finalizado',
       suspendido: '● Suspendido',
-      cancelado: '● Cancelado'
+      cancelado: '● Cancelado',
     };
     return labels[status];
   }
 
-  goBack() {
-    this.router.navigate(['/']);
+  // SEARCH
+  searchTerm = signal('');
+
+  // FILTERED LIST based on search
+  filteredCompetitors = computed(() => {
+    const term = this.searchTerm().trim().toLowerCase();
+    if (!term) return this.sessionCompetitors();
+    return this.sessionCompetitors().filter(
+      (c) =>
+        `${c.nombre} ${c.apellido}`.toLowerCase().includes(term) ||
+        c.dni.toLowerCase().includes(term),
+    );
+  });
+
+  // MODAL STATE
+  selectedCompetitor = signal<any | null>(null);
+  peso = signal(''); // weight input for modal
+
+  openCompetitor(comp: any) {
+    this.selectedCompetitor.set(comp);
+    this.peso.set(comp.peso ?? '');
+  }
+
+  closeModal() {
+    this.selectedCompetitor.set(null);
+    this.peso.set('');
+  }
+
+  saveWeight() {
+    const comp = this.selectedCompetitor();
+    if (comp) {
+      comp.peso = this.peso();
+    }
+    this.closeModal();
   }
 
   onSubmit() {
     if (this.inscriptionForm.valid && !this.noModalidadSeleccionada()) {
-      const val = this.inscriptionForm.value;
-      const competitor = {
-        ...val,
-        escuela: this.selectedSchool()?.nombre ?? '',
+      const newCompetitor = {
+        ...this.inscriptionForm.value,
+        escuela: this.selectedSchool()?.nombre,
         luchaIndividual: this.modalidadLuchaIndividual(),
         luchaEquipo: this.modalidadLuchaEquipo(),
         tulIndividual: this.modalidadTulIndividual(),
         tulEquipo: this.modalidadTulEquipo(),
+        peso: '',
       };
-
-      this.sessionCompetitors.update(curr => [...curr, competitor]);
-
-      this.inscriptionForm.reset({
-        sexo: 'Masculino',
-        graduacion: '10° Gup',
-        instructor: '',
-      });
-
-      // Reset modalidades
-      this.modalidadLuchaIndividual.set(false);
-      this.modalidadLuchaEquipo.set(false);
-      this.modalidadTulIndividual.set(false);
-      this.modalidadTulEquipo.set(false);
+      this.sessionCompetitors.update((c) => [...c, newCompetitor]);
+      this.inscriptionForm.reset({ sexo: 'Masculino', graduacion: '10° Gup' });
     }
+  }
+
+  goBack() {
+    this.router.navigate(['/']);
   }
 }

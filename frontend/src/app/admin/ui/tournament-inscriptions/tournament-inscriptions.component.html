@@ -34,14 +34,6 @@
         </div>
         
         <div class="tournament-meta-list">
-          <div class="meta-item">
-            <svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
-            {{ tournament()!.date }}
-          </div>
-          <div class="meta-item">
-            <svg viewBox="0 0 24 24"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
-            {{ tournament()!.place }}
-          </div>
           <span class="status-badge" [class]="tournament()!.status">
             {{ getStatusLabel(tournament()!.status) }}
           </span>
@@ -207,7 +199,6 @@
         </form>
       </div>
 
-      <!-- Inscribed List -->
       <div class="section-card-flat list-section">
         <div class="card-header-accent flex-header">
           <div>
@@ -215,8 +206,13 @@
             <p>Lista de competidores registrados en este torneo para esta escuela.</p>
           </div>
           <div class="schools-summary">
-            Total: <strong>{{ sessionCompetitors().length }}</strong>
+            Total: <strong>{{ filteredCompetitors().length }}</strong>
           </div>
+        </div>
+
+        <!-- Search Bar -->
+        <div class="search-bar" style="margin: 12px 0;">
+          <input type="text" placeholder="Buscar competidor..." class="form-input-premium" [value]="searchTerm()" (input)="searchTerm.set($event.target.value)" />
         </div>
 
         <div class="table-container-premium">
@@ -230,8 +226,8 @@
               </tr>
             </thead>
             <tbody>
-              @for (comp of sessionCompetitors(); track comp.dni) {
-                <tr>
+              @for (comp of filteredCompetitors(); track comp.dni) {
+                <tr (click)="openCompetitor(comp)" style="cursor: pointer;">
                   <td>
                     <div class="cat-title">{{ comp.nombre }} {{ comp.apellido }}</div>
                     <div class="cat-sub">DNI: {{ comp.dni }} · {{ comp.sexo }}</div>
@@ -254,11 +250,11 @@
                   </td>
                 </tr>
               }
-              @if (sessionCompetitors().length === 0) {
+              @if (filteredCompetitors().length === 0) {
                 <tr>
                   <td colspan="4" style="text-align: center; color: var(--text-muted); padding: 40px;">
                     <div style="font-size: 32px; margin-bottom: 8px;">📋</div>
-                    No hay competidores inscriptos aún.
+                    No hay competidores que coincidan con la búsqueda.
                   </td>
                 </tr>
               }
@@ -266,6 +262,8 @@
           </table>
         </div>
       </div>
+
+
     </div>
   </div>
 }
